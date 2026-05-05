@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meredith's Cube</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:   #ffffff;
+  --fg:   #0e0e0e;
+  --dim:  rgba(14,14,14,0.32);
+  --line: rgba(14,14,14,0.09);
+  --red:  #c8291f;
+  --f:    Helvetica, Arial, sans-serif;
+}
+html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--fg); font-family:var(--f); cursor:none; }
+
+/* ── cursor ── */
+#cur {
+  position:fixed; pointer-events:none; z-index:2000;
+  transform:translate(-50%,-50%);
+  width:7px; height:7px; border-radius:50%; background:var(--fg);
+  transition:transform .2s cubic-bezier(.16,1,.3,1);
+}
+#cur.big { transform:translate(-50%,-50%) scale(4.5); background:rgba(14,14,14,.12); }
+#cur-ring {
+  position:fixed; pointer-events:none; z-index:1999;
+  transform:translate(-50%,-50%);
+  width:32px; height:32px; border-radius:50%;
+  border:1px solid rgba(14,14,14,.25);
+  transition:opacity .2s;
+}
+
+/* ── layout ── */
+#layout { display:flex; width:100vw; height:100vh; }
+
+/* ── LEFT ── */
+#left { flex:1; position:relative; overflow:hidden; border-right:1px solid rgba(14,14,14,.12); }
+
+/* nav */
+#nav {
+  position:absolute; top:0; left:0; right:0; z-index:40;
+  padding:26px 36px;
+  display:flex; justify-content:space-between; align-items:center;
+  opacity:0;
+}
+.nav-label { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); }
+.nav-links  { display:flex; gap:24px; }
+.nav-links a { font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color .15s; }
+.nav-links a:hover { color:var(--fg); }
+#avail {
+  display:flex; align-items:center; gap:7px;
+  font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+}
+#avail-dot {
+  width:7px; height:7px; border-radius:50%; background:#22c55e; flex-shrink:0;
+  animation:dotBlink 1.6s ease-in-out infinite;
+}
+@keyframes dotBlink {
+  0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,.55); }
+  50%    { opacity:.5; box-shadow:0 0 0 4px rgba(34,197,94,0); }
+}
+
+/* ── SW watermark ── */
+#sw-mark {
+  position:absolute; bottom:-30px; right:-20px; z-index:1;
+  font-size:clamp(240px,32vw,420px);
+  font-weight:600; letter-spacing:-.07em; line-height:1;
+  color:red;
+  pointer-events:none; user-select:none;
+  opacity:0;
+}
+
+/* ── TITLE — top left, under nav ── */
+#title-block {
+  position:absolute; top:72px; left:32px; z-index:2;
+  pointer-events:none; user-select:none;
+  opacity:0;
+}
+/* Portfolio 2026 tag */
+#title-block .t-sub {
+  font-size:7px; letter-spacing:.26em; text-transform:uppercase;
+  color:#fff; margin-top:18px; margin-bottom:0; display:inline-flex; align-items:center;
+  font-weight:600; background:var(--red);
+  padding:5px 11px 4px; border-radius:2px;
+  opacity:0;
+  transition: opacity .5s ease;
+}
+
+/* Nav layout: links left | name center | avail right */
+#nav {
+  position:absolute; top:0; left:0; right:0; z-index:40;
+  padding:0 36px;
+  height:56px;
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
+  opacity:0;
+}
+.nav-links  { display:flex; gap:24px; justify-content:flex-start; }
+.nav-links a { font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color .15s; }
+.nav-links a:hover { color:var(--fg); }
+#nav-name {
+  font-size:9px; letter-spacing:.28em; text-transform:uppercase;
+  font-weight:700; color:var(--fg); text-align:center;
+  white-space:nowrap;
+}
+#nav-name .name-hi { color:var(--red); }
+.nav-right { display:flex; justify-content:flex-end; }
+#avail {
+  display:flex; align-items:center; gap:7px;
+  font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+}
+#avail-dot {
+  width:7px; height:7px; border-radius:50%; background:#22c55e; flex-shrink:0;
+  animation:dotBlink 1.6s ease-in-out infinite;
+}
+@keyframes dotBlink {
+  0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,.55); }
+  50%    { opacity:.5; box-shadow:0 0 0 4px rgba(34,197,94,0); }
+}
+#left-corner-tl, #left-corner-tr, #left-corner-bl, #left-corner-br {
+  position:absolute; pointer-events:none; z-index:50;
+  width:20px; height:20px;
+}
+#left-corner-tl { top:16px; left:16px; border-top:1px solid rgba(14,14,14,.22); border-left:1px solid rgba(14,14,14,.22); }
+#left-corner-tr { top:16px; right:16px; border-top:1px solid rgba(14,14,14,.22); border-right:1px solid rgba(14,14,14,.22); }
+#left-corner-bl { bottom:16px; left:16px; border-bottom:1px solid rgba(14,14,14,.22); border-left:1px solid rgba(14,14,14,.22); }
+#left-corner-br { bottom:16px; right:16px; border-bottom:1px solid rgba(14,14,14,.22); border-right:1px solid rgba(14,14,14,.22); }
+/* subtle horizontal rules */
+#left-line-t, #left-line-b {
+  position:absolute; left:44px; right:44px; height:1px;
+  pointer-events:none; z-index:49;
+  background:rgba(14,14,14,.07);
+}
+#left-line-t { top:54px; }
+#left-line-b { bottom:54px; }
+.bt-line {
+  display:block;
+  font-size:clamp(70px,9vw,124px);
+  font-weight:700; letter-spacing:-.04em; line-height:.87;
+  color:var(--fg); text-transform:uppercase;
+}
+.bt-line.accent { color:var(--red); }
+.title-info {
+  margin-top:16px; display:flex; flex-direction:column; gap:2px;
+}
+.title-info span {
+  font-size:8px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--dim); font-weight:400; line-height:1.6;
+}
+
+/* ── CUBE ── */
+#cube-wrap {
+  position:absolute; top:60%; left:70%;
+  transform:translate(-50%,-50%) scale(0);
+  z-index:3;
+  opacity:0;
+  transition: transform 0.65s cubic-bezier(.16,1,.3,1),
+              opacity 0.65s cubic-bezier(.16,1,.3,1);
+}
+/* zoom state when a folder is clicked */
+#cube-wrap.cube-zoomed {
+  transform:translate(-50%,-50%) scale(1.35) !important;
+}
+/* shrink state when subpage is open */
+#cube-wrap.cube-shrink {
+  transform:translate(-50%,-50%) scale(0.6) !important;
+  opacity:0.3 !important;
+}
+#cube-stage { perspective:960px; width:300px; height:300px; }
+#cube { width:100%; height:100%; transform-style:preserve-3d; position:relative; }
+
+.face {
+  position:absolute; width:300px; height:300px; overflow:visible;
+  transition:opacity .5s cubic-bezier(.16,1,.3,1);
+}
+.front  { transform:translateZ(150px); }
+.back   { transform:rotateY(180deg) translateZ(150px); }
+.fleft  { transform:rotateY(-90deg) translateZ(150px); }
+.fright { transform:rotateY(90deg)  translateZ(150px); }
+.ftop   { transform:rotateX(90deg)  translateZ(150px); }
+.fbot   { transform:rotateX(-90deg) translateZ(150px); }
+
+/* photo grid — large gap, cells float scattered */
+.photo-grid {
+  width:100%; height:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:28px;
+  background:transparent;
+  padding:8px;
+}
+.photo-cell { overflow:hidden; position:relative; border-radius:2px; }
+.photo-cell::before {
+  content:''; position:absolute; inset:0;
+  background:var(--ph-bg,#ccc);
+  transition:opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
+}
+
+/*
+  Selective highlight states:
+  .cell-dim  → fade out this cell (not selected)
+  .cell-hi   → full brightness
+  Default (no class) = normal
+*/
+.photo-cell.cell-dim::before  { opacity:.08; }
+.photo-cell.cell-hi::before   { opacity:1; transform:scale(1.04); }
+
+/* bottom info */
+#face-info {
+  position:absolute; bottom:32px; left:36px; right:36px; z-index:10;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  opacity:0;
+}
+#face-label { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); }
+#face-counter { font-size:8px; letter-spacing:.14em; color:var(--dim); font-variant-numeric:tabular-nums; }
+
+/* ── RIGHT ── */
+#right { width:340px; flex-shrink:0; display:flex; flex-direction:column; overflow:hidden; position:relative; background:#111; }
+
+/* Red top accent bar */
+#right::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, #c8291f 0%, #c8291f 40%, transparent 40%);
+  z-index:60; pointer-events:none;
+}
+/* corner marks inside right panel */
+#right-corner-tl, #right-corner-tr, #right-corner-bl, #right-corner-br {
+  position:absolute; pointer-events:none; z-index:55; width:14px; height:14px;
+}
+#right-corner-tl { top:20px; left:14px; border-top:1px solid rgba(200,41,31,.5); border-left:1px solid rgba(200,41,31,.5); }
+#right-corner-tr { top:20px; right:14px; border-top:1px solid rgba(255,255,255,.15); border-right:1px solid rgba(255,255,255,.15); }
+#right-corner-bl { bottom:20px; left:14px; border-bottom:1px solid rgba(200,41,31,.4); border-left:1px solid rgba(200,41,31,.4); }
+#right-corner-br { bottom:20px; right:14px; border-bottom:1px solid rgba(255,255,255,.12); border-right:1px solid rgba(255,255,255,.12); }
+/* thin vertical red line on left edge */
+#right-redline {
+  position:absolute; top:3px; bottom:0; left:0; width:2px;
+  background:linear-gradient(180deg, #c8291f 0%, rgba(200,41,31,.15) 60%, transparent 100%);
+  pointer-events:none; z-index:54;
+}
+
+#right-header {
+  padding:26px 36px; border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
+  opacity:0;
+}
+.rh-label { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:#ffffff; }
+.rh-count  { font-size:8px; letter-spacing:.12em; color:#ffffff; }
+.rf-line { font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:#ffffff; line-height:2.3; }
+.rf-avail {
+  display:flex; align-items:center; gap:7px;
+  font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:#ffffff; line-height:2.3;
+}
+.rf-avail-dot {
+  width:7px; height:7px; border-radius:50%; background:#22c55e; flex-shrink:0;
+  animation:dotBlink 1.6s ease-in-out infinite;
+}
+#list-wrap { flex:1; overflow:hidden; position:relative; opacity:0; }
+#list { will-change:transform; padding:20px 12px 20px; }
+
+/* ── FOLDER CARDS — tab always visible, body stacked ── */
+.folder {
+  position:relative; cursor:none;
+  margin-bottom:-28px;
+  transition:filter .28s cubic-bezier(.16,1,.3,1),
+             transform .28s cubic-bezier(.16,1,.3,1),
+             opacity .28s cubic-bezier(.16,1,.3,1);
+}
+.folder.folder-dim {
+  opacity:.18;
+}
+.folder:hover {
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.55));
+  transform:translateY(-20px) scale(1.015) !important;
+  z-index:20;
+  opacity:1 !important;
+}
+/* Tab is ALWAYS visible — sits above everything */
+.folder-tab {
+  height:20px; width:68px;
+  display:inline-flex; align-items:center; padding:0 9px;
+  font-size:6px; letter-spacing:.22em; text-transform:uppercase; font-weight:700;
+  border-radius:3px 3px 0 0; position:relative; z-index:30;
+  /* margin-left set per-folder in JS for staggered tab positions */
+}
+.folder-body {
+  border-radius:4px; padding:12px 14px 14px;
+  position:relative; z-index:2;
+  box-shadow:0 3px 12px rgba(0,0,0,.25);
+}
+.folder-num   { font-size:7px; letter-spacing:.2em; text-transform:uppercase; margin-bottom:4px; color:rgba(255,255,255,.5); }
+.folder-title { font-size:15px; font-weight:700; letter-spacing:-.025em; line-height:1.05; margin-bottom:3px; }
+.folder-meta  { font-size:7px; letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.42); }
+/* fc-0 (About Me white) needs dark text overrides */
+.fc-0 .folder-num  { color:rgba(14,14,14,.5); }
+.fc-0 .folder-meta { color:rgba(14,14,14,.42); }
+.fc-0 .folder-tab { background:#e8e8e8; color:#0e0e0e; }
+.fc-0 .folder-body { background:#f8f8f8; color:#0e0e0e; border:1px solid rgba(14,14,14,.08); }
+.fc-1 .folder-tab, .fc-1 .folder-body { background:#3a5a6e; color:#d8eaf4; }
+.fc-2 .folder-tab, .fc-2 .folder-body { background:#4a6042; color:#d4e8d0; }
+.fc-3 .folder-tab, .fc-3 .folder-body { background:#c8291f; color:#fde8e6; }
+.fc-4 .folder-tab, .fc-4 .folder-body { background:#6b6560; color:#ede8e2; }
+
+#right-footer {
+  padding:20px 36px; border-top:1px solid rgba(255,255,255,.08); flex-shrink:0;
+  opacity:0;
+}
+
+/* ── SUBPAGE OVERLAY ── */
+#subpage {
+  position:fixed; inset:0; z-index:500;
+  background:var(--bg);
+  display:flex; flex-direction:column;
+  opacity:0; pointer-events:none;
+  transition:opacity .45s cubic-bezier(.16,1,.3,1);
+}
+#subpage.open { opacity:1; pointer-events:all; }
+
+#sub-nav {
+  padding:26px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--line); flex-shrink:0;
+}
+#sub-back {
+  font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim);
+  cursor:none; background:none; border:none; font-family:var(--f);
+  transition:color .15s; display:flex; align-items:center; gap:10px;
+}
+#sub-back:hover { color:var(--fg); }
+#sub-back .arrow { font-size:12px; }
+#sub-title-sm { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); }
+
+#sub-body { flex:1; overflow-y:auto; padding:60px 48px 48px; }
+
+#sub-hero { margin-bottom:48px; }
+#sub-hero-num   { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim); margin-bottom:12px; }
+#sub-hero-title { font-size:clamp(40px,5vw,68px); font-weight:700; letter-spacing:-.04em; line-height:.92; color:var(--fg); text-transform:uppercase; margin-bottom:16px; }
+#sub-hero-meta  { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); }
+
+#sub-divider { width:100%; height:1px; background:var(--line); margin:36px 0; }
+
+/* placeholder content grid */
+#sub-content { display:grid; grid-template-columns:repeat(2,1fr); gap:3px; }
+.sub-card {
+  aspect-ratio:4/3; background:rgba(14,14,14,.05);
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim);
+  position:relative; overflow:hidden;
+  transition:background .2s;
+}
+.sub-card:hover { background:rgba(14,14,14,.09); }
+.sub-card-label { position:absolute; bottom:12px; left:14px; font-size:7px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); }
+
+/* subpage colors per section */
+.sub-accent-0 { --sa: #c9b8a8; }
+.sub-accent-1 { --sa: #3a5a6e; }
+.sub-accent-2 { --sa: #4a6042; }
+.sub-accent-3 { --sa: #c02820; }
+.sub-accent-4 { --sa: #8a8880; }
+
+.sub-card:nth-child(1) { background:rgba(14,14,14,.06); }
+
+/* ── KEYFRAMES ── */
+@keyframes cIn { from{opacity:0;transform:translate(-50%,-50%) scale(.65)} to{opacity:1;transform:translate(-50%,-50%) scale(.9)} }
+@keyframes sUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fIn { from{opacity:0} to{opacity:1} }
+
+/* intro char reveal */
+.char-wrap { display:inline-block; overflow:hidden; vertical-align:bottom; }
+.char-inner {
+  display:inline-block;
+  transform:translateY(110%);
+  opacity:0;
+}
+.char-inner.revealed {
+  animation:charUp .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes charUp {
+  from { transform:translateY(110%); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
+}
+
+/* title-info line reveal */
+.info-line-wrap { overflow:hidden; display:block; }
+.info-line-inner {
+  display:block;
+  transform:translateY(100%);
+  opacity:0;
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(14,14,14,.62); font-weight:500; line-height:2;
+}
+.info-line-inner.revealed {
+  animation:lineUp .5s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes lineUp {
+  from { transform:translateY(100%); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
+}
+/* first info line gets full color as accent */
+.info-line-wrap:first-child .info-line-inner { color:var(--fg); font-weight:600; }
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<div id="layout">
+
+  <!-- LEFT -->
+  <div id="left">
+    <nav id="nav">
+      <div class="nav-links"><a href="#">Info</a><a href="#">CV</a></div>
+      <span id="nav-name"><span class="name-hi">Keting</span> Chen</span>
+      <div class="nav-right"><span id="avail"><span id="avail-dot"></span>Available to work</span></div>
+    </nav>
+
+    <!-- corner decoration -->
+    <div id="left-corner-tl"></div>
+    <div id="left-corner-tr"></div>
+    <div id="left-corner-bl"></div>
+    <div id="left-corner-br"></div>
+    <div id="left-line-t"></div>
+    <div id="left-line-b"></div>
+
+    <div id="title-block">
+      <span class="bt-line" id="bt-meredith"></span>
+      <span class="bt-line accent" id="bt-cube"></span>
+      <div class="title-info" id="title-info">
+        <div class="info-line-wrap"><span class="info-line-inner">University of Amsterdam</span></div>
+        <div class="info-line-wrap"><span class="info-line-inner">Major in Media and Information</span></div>
+        <div class="info-line-wrap"><span class="info-line-inner">Minor in Amsterdam Data Science and Artificial Intelligence</span></div>
+      </div>
+      <span class="t-sub">Portfolio 2026</span>
+    </div>
+
+    <div id="sw-mark">SW</div>
+
+    <div id="cube-wrap">
+      <div id="cube-stage">
+        <div id="cube">
+          <div class="face front"  id="f0"><div class="photo-grid" id="pg0"></div></div>
+          <div class="face back"   id="f1"><div class="photo-grid" id="pg1"></div></div>
+          <div class="face fleft"  id="f2"><div class="photo-grid" id="pg2"></div></div>
+          <div class="face fright" id="f3"><div class="photo-grid" id="pg3"></div></div>
+          <div class="face ftop"   id="f4"><div class="photo-grid" id="pg4"></div></div>
+          <div class="face fbot"   id="f5"><div class="photo-grid" id="pg5"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="face-info">
+      <span id="face-label">—</span>
+      <span id="face-counter">—</span>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <div id="right-redline"></div>
+    <div id="right-corner-tl"></div>
+    <div id="right-corner-tr"></div>
+    <div id="right-corner-bl"></div>
+    <div id="right-corner-br"></div>
+    <div id="right-header">
+      <span class="rh-label">Selected Works</span>
+      <span class="rh-count">05 Projects</span>
+    </div>
+    <div id="list-wrap">
+      <div id="list"></div>
+    </div>
+    <div id="right-footer">
+      <div class="rf-line">Bridging Data with Marketing</div>
+      <div class="rf-avail"><span class="rf-avail-dot"></span>Available to work</div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<!-- SUBPAGE -->
+<div id="subpage">
+  <div id="sub-nav">
+    <button id="sub-back"><span class="arrow">←</span> Back</button>
+    <span id="sub-title-sm">—</span>
+  </div>
+  <div id="sub-body">
+    <div id="sub-hero">
+      <div id="sub-hero-num">—</div>
+      <div id="sub-hero-title">—</div>
+      <div id="sub-hero-meta">—</div>
+    </div>
+    <div id="sub-divider"></div>
+    <div id="sub-content">
+      <!-- cards injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── PALETTES: 6 faces × 9 cells ── */
+const PALETTES = [
+  ['#c9b8a8','#d4c4b4','#e2d4c2','#a8907a','#b89e88','#dccebb','#987060','#c4a888','#ead8c0'],
+  ['#3a5a6e','#406070','#507280','#2e4858','#4a6678','#607888','#304e5e','#587080','#708898'],
+  ['#4a6042','#577050','#688060','#3c5034','#507248','#728868','#405c38','#607860','#829070'],
+  ['#7a6858','#8a7868','#9a8878','#6a5848','#7a6858','#aa9888','#5a4838','#8a7060','#b0a090'],
+  ['#8a8880','#989890','#a8a8a0','#7a7870','#909090','#b0b0a8','#807870','#989090','#b8b8b0'],
+  ['#8878a0','#9888b0','#a898c0','#706880','#8878a0','#b0a8c8','#807090','#9890a8','#c0b8d0'],
+];
+
+/* store cell elements for each face */
+const faceCells = [];
+for (let f = 0; f < 6; f++) {
+  const g = document.getElementById('pg'+f);
+  const cells = [];
+  PALETTES[f].forEach(col => {
+    const c = document.createElement('div');
+    c.className = 'photo-cell';
+    c.style.setProperty('--ph-bg', col);
+    g.appendChild(c);
+    cells.push(c);
+  });
+  faceCells.push(cells);
+}
+
+/* ── SECTIONS ── */
+const SECS = [
+  {
+    num:'01', cat:'Archive', title:'About Me',
+    meta:'Profile · Amsterdam · 2026', face:0,
+    desc:'Personal profile, background, and areas of expertise.',
+    cards:['Introduction','Background','Skills','Contact']
+  },
+  {
+    num:'02', cat:'Archive', title:'Data Science',
+    meta:'NLP · Data Visualization', face:1,
+    desc:'Research and applied work in machine learning and data visualisation.',
+    cards:['NLP Projects','Data Visualization']
+  },
+  {
+    num:'03', cat:'Archive', title:'Visuals',
+    meta:'Design · Print · Digital', face:2,
+    desc:'Graphic design,digital creative direction.',
+    cards:['Leaflet','Brand Identity','Landing Pages','Editorial']
+  },
+  {
+    num:'04', cat:'Archive', title:'Video & Motion',
+    meta:'Advertisements · 2023', face:3,
+    desc:'Advertisements Videos',
+    cards:['Loreal Brandstorm 2023', 'Loreal Brandstorm 2024']
+  },
+  {
+    num:'05', cat:'Archive', title:'Slides & Decks',
+    meta:'Slides · 2024', face:4,
+    desc:'Presentation Design.',
+    cards:['Loreal Brandstorm 2023','Loreal Brandstorm 2024']
+  },
+];
+
+/*
+  Which cells to highlight per section (indices 0-8 on the relevant face)
+  We highlight ~4-5 cells, leave others dim
+*/
+const HIGHLIGHT_CELLS = [
+  [0,2,4,7],     // About Me
+  [1,3,5,6,8],   // Data Science
+  [0,3,4,6],     // Visuals
+  [1,2,5,7,8],   // Video & Motion
+  [0,2,4,5,7],   // Slides & Decks
+];
+
+/* faces that are NOT the active section get full dim */
+const FACE_Y     = [0, 180, 90, -90, 0, 0];
+const FACE_X     = [-20, -20, -20, -20, -90, 90];
+const FACE_NAMES = ['About Me','Data Science','Visuals','Video & Motion','Slides & Decks','—'];
+
+/* ── CURSOR ── */
+const cur  = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function rl(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(rl); })();
+
+/* ── INTRO SEQUENCE ── */
+(function(){
+  // Helper: fade element in
+  function fadeIn(el, dur, cb){
+    el.style.transition = `opacity ${dur}ms cubic-bezier(.16,1,.3,1)`;
+    el.style.opacity = '1';
+    if(cb) setTimeout(cb, dur);
+  }
+
+  // Helper: build char spans for a bt-line
+  function buildChars(el, text){
+    el.innerHTML = '';
+    text.split('').forEach(ch => {
+      const wrap = document.createElement('span');
+      wrap.className = 'char-wrap';
+      const inner = document.createElement('span');
+      inner.className = 'char-inner';
+      inner.textContent = ch === ' ' ? '\u00a0' : ch;
+      wrap.appendChild(inner);
+      el.appendChild(wrap);
+    });
+    return el.querySelectorAll('.char-inner');
+  }
+
+  // Helper: reveal chars with stagger
+  function revealChars(chars, delay, stagger, cb){
+    chars.forEach((c,i) => {
+      setTimeout(() => {
+        c.classList.add('revealed');
+        if(cb && i === chars.length-1) setTimeout(cb, 550);
+      }, delay + i * stagger);
+    });
+  }
+
+  const btMeredith = document.getElementById('bt-meredith');
+  const btCube     = document.getElementById('bt-cube');
+  const swMark     = document.getElementById('sw-mark');
+  const titleBlock = document.getElementById('title-block');
+  const cubeWrap   = document.getElementById('cube-wrap');
+  const infoLines  = document.querySelectorAll('.info-line-inner');
+  const nav        = document.getElementById('nav');
+  const faceInfo   = document.getElementById('face-info');
+  const rightH     = document.getElementById('right-header');
+  const listWrap   = document.getElementById('list-wrap');
+  const rightF     = document.getElementById('right-footer');
+  const tSub       = document.querySelector('#title-block .t-sub');
+
+  // Build char spans
+  const mChars = buildChars(btMeredith, "Meredith's");
+  const cChars = buildChars(btCube, "Cube");
+
+  // STEP 1 (t=0): title block visible + SW fade in simultaneously
+  setTimeout(() => {
+    titleBlock.style.opacity = '1';
+
+    // Reveal "Meredith's" chars
+    revealChars(mChars, 0, 42);
+    // Reveal "Cube" chars with slight offset
+    revealChars(cChars, 80, 55);
+
+    // SW watermark fades in
+    swMark.style.transition = 'opacity 1.1s cubic-bezier(.16,1,.3,1)';
+    swMark.style.opacity = '0.13';
+  }, 100);
+
+  // STEP 2 (t=700ms): cube scales up from 0 → final
+  setTimeout(() => {
+    cubeWrap.style.opacity = '1';
+    cubeWrap.style.transform = 'translate(-50%,-50%) scale(.9)';
+  }, 700);
+
+  // STEP 3 (t=1400ms): title-info lines reveal one by one, then Portfolio 2026 tag slides in last
+  setTimeout(() => {
+    infoLines.forEach((line, i) => {
+      setTimeout(() => line.classList.add('revealed'), i * 160);
+    });
+    // Portfolio 2026 tag appears after all lines
+    setTimeout(() => { tSub.style.opacity = '1'; }, 600);
+  }, 1400);
+
+  // STEP 4 (t=1650ms): nav + right panel + face-info fade in
+  setTimeout(() => {
+    [nav, faceInfo, rightH, listWrap, rightF].forEach((el, i) => {
+      setTimeout(() => fadeIn(el, 500), i * 80);
+    });
+  }, 1650);
+
+})();
+
+/* ── BUILD FOLDERS — seamless infinite scroll ── */
+const TAB_OFFSETS = [8, 52, 118, 176, 228];
+
+function buildFolderSet(container) {
+  SECS.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className=`folder fc-${i%5}`;
+    d.dataset.i=i;
+    const tabOff = TAB_OFFSETS[i%5];
+    d.innerHTML=`<div class="folder-tab" style="margin-left:${tabOff}px">${s.num}</div><div class="folder-body"><div class="folder-num">${s.num} / ${s.cat}</div><div class="folder-title">${s.title}</div><div class="folder-meta">${s.meta}</div></div>`;
+    d.addEventListener('mouseenter',()=>onHover(s));
+    d.addEventListener('mouseleave',onLeave);
+    d.addEventListener('click',()=>openSubpage(s));
+    container.appendChild(d);
+  });
+}
+
+const listWrapEl = document.getElementById('list-wrap');
+listWrapEl.style.cssText += ';position:relative;overflow:hidden;';
+
+// Scroll track — holds N copies end-to-end
+const scrollTrack = document.createElement('div');
+scrollTrack.id = 'scroll-track';
+scrollTrack.style.cssText = 'position:absolute;top:0;left:0;right:0;will-change:transform;';
+listWrapEl.appendChild(scrollTrack);
+
+// Build initial 3 sets
+const sets = [];
+for (let n = 0; n < 3; n++) {
+  const s = document.createElement('div');
+  s.className = 'folder-set';
+  s.style.cssText = 'padding:12px 12px;';
+  buildFolderSet(s);
+  scrollTrack.appendChild(s);
+  sets.push(s);
+}
+
+/* ── SEAMLESS SCROLL ── */
+let scrollY = 0, oneSetH = 0, paused = false;
+
+function startScroll() {
+  oneSetH = sets[0].offsetHeight;
+  const wrapH = listWrapEl.offsetHeight;
+
+  // Ensure we have enough sets to always fill the viewport + one extra
+  const needed = Math.ceil(wrapH / oneSetH) + 2;
+  while (sets.length < needed) {
+    const s = document.createElement('div');
+    s.className = 'folder-set';
+    s.style.cssText = 'padding:12px 12px;';
+    buildFolderSet(s);
+    scrollTrack.appendChild(s);
+    sets.push(s);
+  }
+
+  (function loop() {
+    if (!paused) {
+      scrollY += 0.55;
+      // Reset: when we've scrolled exactly one full set, snap back seamlessly
+      if (scrollY >= oneSetH) scrollY -= oneSetH;
+      scrollTrack.style.transform = `translateY(${-scrollY}px)`;
+    }
+    requestAnimationFrame(loop);
+  })();
+}
+
+window.addEventListener('load', () => setTimeout(startScroll, 120));
+
+/* ── CELL HIGHLIGHT LOGIC ── */
+function highlightSection(secIdx) {
+  /* clear all cells first */
+  for (let f=0;f<6;f++){
+    faceCells[f].forEach(c=>{ c.classList.remove('cell-hi','cell-dim'); });
+  }
+  const activeFace = SECS[secIdx].face;
+  const hiSet = new Set(HIGHLIGHT_CELLS[secIdx]);
+  /* active face: highlight chosen cells, dim others */
+  faceCells[activeFace].forEach((c,i)=>{
+    if(hiSet.has(i)) c.classList.add('cell-hi');
+    else c.classList.add('cell-dim');
+  });
+  /* all other faces: full dim */
+  for (let f=0;f<6;f++){
+    if(f===activeFace) continue;
+    faceCells[f].forEach(c=>c.classList.add('cell-dim'));
+  }
+}
+function clearHighlight(){
+  for(let f=0;f<6;f++) faceCells[f].forEach(c=>c.classList.remove('cell-hi','cell-dim'));
+}
+
+/* ── HOVER ── */
+function onHover(s){
+  paused=true; cur.classList.add('big');
+  spinToFace(s.face);
+  highlightSection(SECS.indexOf(s));
+  document.getElementById('face-label').textContent=FACE_NAMES[s.face];
+  document.getElementById('face-counter').textContent=`0${s.face+1} / 06`;
+  // dim all folders that are NOT the same section index
+  document.querySelectorAll('.folder').forEach(f => {
+    if(parseInt(f.dataset.i) !== SECS.indexOf(s)) f.classList.add('folder-dim');
+    else f.classList.remove('folder-dim');
+  });
+  // subtle hover scale (only if not already zoomed)
+  if(!cubeZoomed) {
+    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(1.02)';
+  }
+}
+function onLeave(){
+  paused=false; cur.classList.remove('big');
+  clearHighlight();
+  autoSpin=true;
+  document.getElementById('face-label').textContent='—';
+  document.getElementById('face-counter').textContent='—';
+  document.querySelectorAll('.folder').forEach(f => f.classList.remove('folder-dim'));
+  // restore normal scale (only if not zoomed)
+  if(!cubeZoomed) {
+    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(.9)';
+  }
+}
+
+/* ── CUBE ZOOM ── */
+const cubeWrapEl = document.getElementById('cube-wrap');
+let cubeZoomed = false;
+
+function zoomCubeIn() {
+  cubeWrapEl.classList.remove('cube-shrink');
+  cubeWrapEl.classList.add('cube-zoomed');
+  cubeZoomed = true;
+}
+
+function zoomCubeOut() {
+  cubeWrapEl.classList.remove('cube-zoomed');
+  cubeZoomed = false;
+}
+
+function zoomCubeShrink() {
+  cubeWrapEl.classList.remove('cube-zoomed');
+  cubeWrapEl.classList.add('cube-shrink');
+  cubeZoomed = false;
+}
+
+function zoomCubeRestore() {
+  cubeWrapEl.classList.remove('cube-shrink');
+}
+
+/* ── SUBPAGE ── */
+const subpage = document.getElementById('subpage');
+function openSubpage(s){
+  const idx = SECS.indexOf(s);
+  document.getElementById('sub-hero-num').textContent   = `${s.num} / ${s.cat}`;
+  document.getElementById('sub-hero-title').textContent = s.title;
+  document.getElementById('sub-hero-meta').textContent  = s.meta;
+  document.getElementById('sub-title-sm').textContent   = s.title;
+
+  /* highlight the face first, then zoom in, then after a beat open subpage */
+  highlightSection(idx);
+  spinToFace(s.face);
+  zoomCubeIn();
+
+  /* wait for zoom animation to play, then transition to subpage */
+  setTimeout(() => {
+    /* build content cards */
+    const cont = document.getElementById('sub-content');
+    cont.innerHTML='';
+    s.cards.forEach((label,ci)=>{
+      const card=document.createElement('div');
+      card.className=`sub-card sub-accent-${idx}`;
+      card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
+      card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+      cont.appendChild(card);
+    });
+
+    /* placeholder "add content" card */
+    const add=document.createElement('div');
+    add.className='sub-card';
+    add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
+    add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
+    cont.appendChild(add);
+
+    zoomCubeShrink();
+    setTimeout(() => {
+      subpage.classList.add('open');
+    }, 200);
+  }, 520);
+
+  paused=true;
+}
+
+document.getElementById('sub-back').addEventListener('click',()=>{
+  subpage.classList.remove('open');
+  paused=false; autoSpin=true;
+  clearHighlight();
+  zoomCubeRestore();
+  setTimeout(() => {
+    // restore cube to normal idle scale
+    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(.9)';
+  }, 100);
+});
+
+/* ── CUBE ── */
+const cube=document.getElementById('cube');
+let rotY=0,rotX=-20,autoSpin=true,rafId=null;
+(function autoLoop(ts){
+  if(autoSpin){ const dt=ts-(autoLoop.last||ts); rotY+=dt*.017; cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+  autoLoop.last=ts; requestAnimationFrame(autoLoop);
+})(0);
+
+function spinToFace(fi){
+  autoSpin=false; cancelAnimationFrame(rafId);
+  const tY=-FACE_Y[fi],tX=FACE_X[fi];
+  const sY=((rotY%360)+360)%360;
+  const diff=((tY-sY+540)%360)-180;
+  const eY=sY+diff,sX=rotX;
+  const t0=performance.now(),dur=660;
+  const ease=t=>t<.5?2*t*t:-1+(4-2*t)*t;
+  (function step(now){
+    const t=Math.min((now-t0)/dur,1),e=ease(t);
+    rotY=sY+(eY-sY)*e; rotX=sX+(tX-sX)*e;
+    cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    if(t<1) rafId=requestAnimationFrame(step);
+  })(t0);
+}
+</script>
+</body>
+</html>

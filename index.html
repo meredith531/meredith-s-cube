@@ -4,12 +4,100 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meredith's Cube</title>
-<!-- 手机版底部三行小字 -->
-<div class="title-info" id="title-info">
-  <div class="info-line-wrap"><span class="info-line-inner">University of Amsterdam</span></div>
-  <div class="info-line-wrap"><span class="info-line-inner">Major in Media and Information</span></div>
-  <div class="info-line-wrap"><span class="info-line-inner">Minor in Amsterdam Data Science and Artificial Intelligence</span></div>
-</div>
+@media (max-width: 768px) {
+  html, body { overflow:hidden; cursor:auto; }
+  #cur, #cur-ring { display:none; }
+
+  #layout {
+    flex-direction:column;
+    width:100vw; height:100vh;
+    overflow:hidden;
+  }
+
+  #left {
+    flex:0 0 58vh;
+    border-right:none;
+    border-bottom:1px solid rgba(14,14,14,.10);
+    overflow:hidden;
+    position:relative;
+  }
+
+  #sw-mark,
+  #left-corner-tl, #left-corner-tr, #left-corner-bl, #left-corner-br,
+  #left-line-t, #left-line-b { display:none; }
+
+  #nav {
+    padding:0 20px;
+    height:44px;
+    grid-template-columns:1fr auto 1fr;
+  }
+  .nav-links { gap:14px; }
+  #nav-name { font-size:8px; letter-spacing:.2em; }
+
+  #title-block {
+    top:52px;
+    left:20px;
+    bottom:auto;
+    pointer-events:none;
+    max-width:55%;
+  }
+  .bt-line {
+    font-size:clamp(36px,10vw,56px);
+    line-height:.9;
+    white-space:nowrap;
+  }
+  #title-block .title-info { display:none; }
+  #title-block .t-sub { display:none; }
+
+  #cube-wrap {
+    top:54%; left:70%;
+  }
+  #cube-wrap.cube-zoomed {
+    transform:translate(-50%,-50%) scale(0.95) !important;
+  }
+  #cube-stage { width:190px; height:190px; perspective:600px; }
+  .face { width:190px; height:190px; }
+  .front  { transform:translateZ(95px); }
+  .back   { transform:rotateY(180deg) translateZ(95px); }
+  .fleft  { transform:rotateY(-90deg) translateZ(95px); }
+  .fright { transform:rotateY(90deg)  translateZ(95px); }
+  .ftop   { transform:rotateX(90deg)  translateZ(95px); }
+  .fbot   { transform:rotateX(-90deg) translateZ(95px); }
+  .photo-grid { gap:16px; padding:6px; }
+
+  #face-info { bottom:14px; left:20px; right:20px; }
+
+  #right {
+    width:100%;
+    flex:1;
+    min-height:0;
+  }
+  #right::before { height:2px; }
+  #right-corner-tl, #right-corner-tr,
+  #right-corner-bl, #right-corner-br,
+  #right-redline { display:none; }
+
+  #right-header { padding:14px 20px; }
+  .rh-label { font-size:8px; }
+  .rh-count  { font-size:8px; }
+  #list-wrap { flex:1; overflow:hidden; }
+
+  .folder { margin-bottom:-20px; }
+  .folder-tab { height:17px; font-size:6px; }
+  .folder-body { padding:9px 12px 11px; }
+  .folder-title { font-size:13px; }
+  .folder-meta  { font-size:7px; }
+
+  #right-footer { padding:12px 20px; }
+  .rf-line { font-size:7px; }
+  .rf-avail { font-size:7px; }
+
+  #subpage { overflow-y:auto; }
+  #sub-nav { padding:16px 24px; }
+  #sub-body { padding:32px 24px 32px; }
+  #sub-hero-title { font-size:clamp(28px,8vw,44px); }
+  #sub-content { grid-template-columns:1fr; }
+}
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root {

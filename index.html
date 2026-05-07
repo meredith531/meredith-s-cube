@@ -338,6 +338,32 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
 .sub-accent-4 { --sa: #8a8880; }
 .sub-card:nth-child(1) { background:rgba(14,14,14,.06); }
 
+.sub-card-pdf {
+  text-decoration:none;
+  border:1px solid var(--line) !important;
+  background:transparent !important;
+  cursor:pointer;
+}
+.sub-card-pdf:hover { background:rgba(14,14,14,.05) !important; }
+.sub-card-video {
+  width:100%; background:rgba(14,14,14,.04);
+  grid-column: 1 / -1;
+  aspect-ratio: unset;
+  display:flex; flex-direction:column; gap:12px;
+  padding:0 0 16px;
+}
+.sub-card-video .video-title {
+  font-size:8px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--dim); padding:14px 14px 0;
+}
+.sub-card-video .video-wrap {
+  padding:57.5% 0 0 0; position:relative; width:100%;
+}
+.sub-card-video .video-wrap iframe {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  border:none;
+}
+
 /* ── KEYFRAMES ── */
 @keyframes cIn { from{opacity:0;transform:translate(-50%,-50%) scale(.65)} to{opacity:1;transform:translate(-50%,-50%) scale(.9)} }
 @keyframes sUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
@@ -552,14 +578,96 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
 </div>
 
 <script>
-const PALETTES = [
-  ['#c9b8a8','#d4c4b4','#e2d4c2','#a8907a','#b89e88','#dccebb','#987060','#c4a888','#ead8c0'],
-  ['#3a5a6e','#406070','#507280','#2e4858','#4a6678','#607888','#304e5e','#587080','#708898'],
-  ['#4a6042','#577050','#688060','#3c5034','#507248','#728868','#405c38','#607860','#829070'],
-  ['#7a6858','#8a7868','#9a8878','#6a5848','#7a6858','#aa9888','#5a4838','#8a7060','#b0a090'],
-  ['#8a8880','#989890','#a8a8a0','#7a7870','#909090','#b0b0a8','#807870','#989090','#b8b8b0'],
-  ['#8878a0','#9888b0','#a898c0','#706880','#8878a0','#b0a8c8','#807090','#9890a8','#c0b8d0'],
-];
+/* ============================================================
+   ✏️  MY_CONTENT — 在这里编辑你的所有内容
+   ============================================================
+
+   每个 section 可以包含：
+   - title / meta：标题和副标题
+   - videos：Vimeo 视频，填写 vimeoId（Vimeo 链接中的数字）
+   - images：图片 URL（上传到 GitHub 后的路径，如 /images/photo.jpg）
+   - cards：纯文字卡片（占位或文字说明）
+   - pdfs：PDF 文件，填写 url 和显示标题
+
+   魔方颜色（cubeColors）：每个 section 对应魔方一个面，9个格子的颜色
+   如果你上传了图片，可以把颜色换成图片路径（暂时留颜色即可）
+   ============================================================ */
+
+const MY_CONTENT = {
+
+  sections: [
+
+    {
+      num: '01', title: 'About Me',
+      meta: 'Profile · Amsterdam · 2026',
+      face: 0,
+      cards: ['Introduction', 'Background', 'Skills', 'Contact'],
+      videos: [],
+      pdfs: [],
+    },
+
+    {
+      num: '02', title: 'Data Science',
+      meta: 'NLP · Data Visualization',
+      face: 1,
+      cards: ['NLP Projects', 'Data Visualization'],
+      videos: [],
+      pdfs: [],
+    },
+
+    {
+      num: '03', title: 'Visuals',
+      meta: 'Design · Print · Digital',
+      face: 2,
+      cards: ['Leaflet', 'Brand Identity', 'Landing Pages', 'Editorial'],
+      videos: [],
+      pdfs: [],
+    },
+
+    {
+      num: '04', title: 'Video & Motion',
+      meta: 'Advertisements · 2023–2024',
+      face: 3,
+      cards: [],  // 有视频就不需要文字卡片，留空即可
+      videos: [
+        { title: "2023 L'Oréal Brandstorm — Maternal Palettes", vimeoId: '1190118834' },
+        // { title: "2024 L'Oréal Brandstorm", vimeoId: 'XXXXXXXXX' },  // 填入第二个视频ID后取消注释
+      ],
+      pdfs: [],
+    },
+
+    {
+      num: '05', title: 'Slides & Decks',
+      meta: 'Slides · 2024',
+      face: 4,
+      cards: ['Loreal Brandstorm 2023', 'Loreal Brandstorm 2024'],
+      videos: [],
+      pdfs: [],
+    },
+
+  ],
+
+  /* 魔方颜色 — 每个 section 9个格子，顺序对应上面 sections */
+  cubeColors: [
+    ['#c9b8a8','#d4c4b4','#e2d4c2','#a8907a','#b89e88','#dccebb','#987060','#c4a888','#ead8c0'],
+    ['#3a5a6e','#406070','#507280','#2e4858','#4a6678','#607888','#304e5e','#587080','#708898'],
+    ['#4a6042','#577050','#688060','#3c5034','#507248','#728868','#405c38','#607860','#829070'],
+    ['#7a6858','#8a7868','#9a8878','#6a5848','#7a6858','#aa9888','#5a4838','#8a7060','#b0a090'],
+    ['#8a8880','#989890','#a8a8a0','#7a7870','#909090','#b0b0a8','#807870','#989090','#b8b8b0'],
+    ['#8878a0','#9888b0','#a898c0','#706880','#8878a0','#b0a8c8','#807090','#9890a8','#c0b8d0'],
+  ],
+
+};
+
+/* ============================================================
+   以下代码不需要改动
+   ============================================================ */
+
+const PALETTES = MY_CONTENT.cubeColors;
+const SECS = MY_CONTENT.sections.map(s => ({
+  ...s, cat: 'Archive', desc: ''
+}));
+
 const faceCells = [];
 for (let f = 0; f < 6; f++) {
   const g = document.getElementById('pg'+f);
@@ -573,14 +681,6 @@ for (let f = 0; f < 6; f++) {
   });
   faceCells.push(cells);
 }
-
-const SECS = [
-  { num:'01', cat:'Archive', title:'About Me', meta:'Profile · Amsterdam · 2026', face:0, desc:'Personal profile, background, and areas of expertise.', cards:['Introduction','Background','Skills','Contact'] },
-  { num:'02', cat:'Archive', title:'Data Science', meta:'NLP · Data Visualization', face:1, desc:'Research and applied work in machine learning and data visualisation.', cards:['NLP Projects','Data Visualization'] },
-  { num:'03', cat:'Archive', title:'Visuals', meta:'Design · Print · Digital', face:2, desc:'Graphic design,digital creative direction.', cards:['Leaflet','Brand Identity','Landing Pages','Editorial'] },
-  { num:'04', cat:'Archive', title:'Video & Motion', meta:'Advertisements · 2023', face:3, desc:'Advertisements Videos', cards:['Loreal Brandstorm 2023', 'Loreal Brandstorm 2024'] },
-  { num:'05', cat:'Archive', title:'Slides & Decks', meta:'Slides · 2024', face:4, desc:'Presentation Design.', cards:['Loreal Brandstorm 2023','Loreal Brandstorm 2024'] },
-];
 const HIGHLIGHT_CELLS = [
   [0,2,4,7],[1,3,5,6,8],[0,3,4,6],[1,2,5,7,8],[0,2,4,5,7],
 ];
@@ -735,43 +835,65 @@ function openSubpage(s){
 
   const isMobile = window.innerWidth <= 768;
 
-  if (isMobile) {
-    // 手机端：立刻高亮图片，预先build内容，2秒后直接显示
-    highlightSection(idx);
-    paused = true;
-
-    // 预先build subpage内容
-    const cont=document.getElementById('sub-content'); cont.innerHTML='';
-    s.cards.forEach((label,ci)=>{
-      const card=document.createElement('div');
-      card.className=`sub-card sub-accent-${idx}`;
-      card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
-      card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
-      cont.appendChild(card);
-    });
-    const add=document.createElement('div'); add.className='sub-card';
-    add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
-    add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
-    cont.appendChild(add);
-
-    // 2秒后直接打开，无动画延迟
-    setTimeout(()=>{ subpage.classList.add('open'); }, 2000);
-  } else {
-    // 桌面端：原有逻辑不变
-    highlightSection(idx); spinToFace(s.face); zoomCubeIn();
-    setTimeout(()=>{
-      const cont=document.getElementById('sub-content'); cont.innerHTML='';
-      s.cards.forEach((label,ci)=>{
-        const card=document.createElement('div');
-        card.className=`sub-card sub-accent-${idx}`;
-        card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
-        card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+  function buildContent(s, idx) {
+    const cont = document.getElementById('sub-content');
+    cont.innerHTML = '';
+    // video cards first
+    if (s.videos && s.videos.length) {
+      // load vimeo player script once
+      if (!document.getElementById('vimeo-sdk')) {
+        const sc = document.createElement('script');
+        sc.id = 'vimeo-sdk';
+        sc.src = 'https://player.vimeo.com/api/player.js';
+        document.head.appendChild(sc);
+      }
+      s.videos.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'sub-card-video';
+        card.innerHTML = `
+          <div class="video-title">${v.title}</div>
+          <div class="video-wrap">
+            <iframe src="https://player.vimeo.com/video/${v.vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              title="${v.title}"></iframe>
+          </div>`;
         cont.appendChild(card);
       });
-      const add=document.createElement('div'); add.className='sub-card';
-      add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
-      add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
-      cont.appendChild(add);
+    }
+    // pdf cards
+    if (s.pdfs && s.pdfs.length) {
+      s.pdfs.forEach(p => {
+        const card = document.createElement('a');
+        card.className = 'sub-card sub-card-pdf';
+        card.href = p.url; card.target = '_blank';
+        card.innerHTML = `<span class="sub-card-label">↓ ${p.title}</span>`;
+        cont.appendChild(card);
+      });
+    }
+    // regular cards
+    s.cards.forEach((label, ci) => {
+      const card = document.createElement('div');
+      card.className = `sub-card sub-accent-${idx}`;
+      card.style.background = `rgba(14,14,14,${0.04+ci*.012})`;
+      card.innerHTML = `<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+      cont.appendChild(card);
+    });
+    const add = document.createElement('div');
+    add.className = 'sub-card';
+    add.style.cssText = 'background:transparent;border:1px dashed rgba(14,14,14,.15);';
+    add.innerHTML = '<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
+    cont.appendChild(add);
+  }
+  if (isMobile) {
+    highlightSection(idx);
+    paused = true;
+    buildContent(s, idx);
+    setTimeout(()=>{ subpage.classList.add('open'); }, 2000);
+  } else {
+    highlightSection(idx); spinToFace(s.face); zoomCubeIn();
+    setTimeout(()=>{
+      buildContent(s, idx);
       zoomCubeShrink();
       setTimeout(()=>subpage.classList.add('open'),200);
     },520);

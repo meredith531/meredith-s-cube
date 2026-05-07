@@ -732,24 +732,50 @@ function openSubpage(s){
   document.getElementById('sub-hero-title').textContent=s.title;
   document.getElementById('sub-hero-meta').textContent=s.meta;
   document.getElementById('sub-title-sm').textContent=s.title;
-  highlightSection(idx); spinToFace(s.face); zoomCubeIn();
-  setTimeout(()=>{
-    const cont=document.getElementById('sub-content'); cont.innerHTML='';
-    s.cards.forEach((label,ci)=>{
-      const card=document.createElement('div');
-      card.className=`sub-card sub-accent-${idx}`;
-      card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
-      card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
-      cont.appendChild(card);
-    });
-    const add=document.createElement('div'); add.className='sub-card';
-    add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
-    add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
-    cont.appendChild(add);
-    zoomCubeShrink();
-    setTimeout(()=>subpage.classList.add('open'),200);
-  },520);
-  paused=true;
+
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
+    // 手机端：高亮图片，停留2秒再跳转，不做魔方缩放动画
+    highlightSection(idx);
+    spinToFace(s.face);
+    paused = true;
+    setTimeout(()=>{
+      const cont=document.getElementById('sub-content'); cont.innerHTML='';
+      s.cards.forEach((label,ci)=>{
+        const card=document.createElement('div');
+        card.className=`sub-card sub-accent-${idx}`;
+        card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
+        card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+        cont.appendChild(card);
+      });
+      const add=document.createElement('div'); add.className='sub-card';
+      add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
+      add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
+      cont.appendChild(add);
+      subpage.classList.add('open');
+    }, 2000);
+  } else {
+    // 桌面端：原有逻辑不变
+    highlightSection(idx); spinToFace(s.face); zoomCubeIn();
+    setTimeout(()=>{
+      const cont=document.getElementById('sub-content'); cont.innerHTML='';
+      s.cards.forEach((label,ci)=>{
+        const card=document.createElement('div');
+        card.className=`sub-card sub-accent-${idx}`;
+        card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
+        card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+        cont.appendChild(card);
+      });
+      const add=document.createElement('div'); add.className='sub-card';
+      add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
+      add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
+      cont.appendChild(add);
+      zoomCubeShrink();
+      setTimeout(()=>subpage.classList.add('open'),200);
+    },520);
+    paused=true;
+  }
 }
 
 document.getElementById('sub-back').addEventListener('click',()=>{

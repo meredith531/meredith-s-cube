@@ -151,7 +151,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
 
 /* ── CUBE ── */
 #cube-wrap {
-  position:absolute; top:60%; left:80%;
+  position:absolute; top:60%; left:70%;
   transform:translate(-50%,-50%) scale(0);
   z-index:3;
   opacity:0;
@@ -409,7 +409,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
     line-height:1.8;
   }
 
-  #cube-wrap { top:58%; left:70%; }
+  #cube-wrap { top:58%; left:62%; }
 
   #sw-mark { display:block; font-size:clamp(160px,50vw,260px); bottom:-10px; right:-10px; opacity:0; }
   #cube-stage { width:190px; height:190px; perspective:600px; }
@@ -736,25 +736,26 @@ function openSubpage(s){
   const isMobile = window.innerWidth <= 768;
 
   if (isMobile) {
-    // 手机端：高亮图片，停留2秒再跳转，不做魔方缩放动画
+    // 手机端：立刻高亮图片，预先build内容，2秒后直接显示
     highlightSection(idx);
-    spinToFace(s.face);
     paused = true;
-    setTimeout(()=>{
-      const cont=document.getElementById('sub-content'); cont.innerHTML='';
-      s.cards.forEach((label,ci)=>{
-        const card=document.createElement('div');
-        card.className=`sub-card sub-accent-${idx}`;
-        card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
-        card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
-        cont.appendChild(card);
-      });
-      const add=document.createElement('div'); add.className='sub-card';
-      add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
-      add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
-      cont.appendChild(add);
-      subpage.classList.add('open');
-    }, 2000);
+
+    // 预先build subpage内容
+    const cont=document.getElementById('sub-content'); cont.innerHTML='';
+    s.cards.forEach((label,ci)=>{
+      const card=document.createElement('div');
+      card.className=`sub-card sub-accent-${idx}`;
+      card.style.background=`rgba(14,14,14,${0.04+ci*.012})`;
+      card.innerHTML=`<span class="sub-card-label">${String(ci+1).padStart(2,'0')} — ${label}</span>`;
+      cont.appendChild(card);
+    });
+    const add=document.createElement('div'); add.className='sub-card';
+    add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
+    add.innerHTML='<span class="sub-card-label" style="color:rgba(14,14,14,.2);">+ Add content</span>';
+    cont.appendChild(add);
+
+    // 2秒后直接打开，无动画延迟
+    setTimeout(()=>{ subpage.classList.add('open'); }, 2000);
   } else {
     // 桌面端：原有逻辑不变
     highlightSection(idx); spinToFace(s.face); zoomCubeIn();

@@ -1777,10 +1777,13 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
   let velX = 0, velY = 0;
   let prevX = 0, prevY = 0;
 
+  var dragStartX2 = 0, dragStartY2 = 0;
+
   function startDrag(x, y) {
     dragging = true;
     lastX = x; lastY = y;
     prevX = x; prevY = y;
+    dragStartX2 = x; dragStartY2 = y;
     velX = 0; velY = 0;
     autoSpin = false;
   }
@@ -1799,9 +1802,17 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
     cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
   }
 
-  function endDrag() {
+  function endDrag(e) {
     if (!dragging) return;
     dragging = false;
+    // If barely moved, treat as click - fire click on target
+    var dx = Math.abs(lastX - dragStartX2);
+    var dy = Math.abs(lastY - dragStartY2);
+    if (dx < 5 && dy < 5 && e && e.target) {
+      var cell = e.target.closest('.photo-cell');
+      if (cell) cell.click();
+      return;
+    }
     // Momentum: keep spinning with velocity then fade back to auto
     let vx = velX * 0.4;
     const decay = 0.92;
@@ -1822,7 +1833,7 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
   // Mouse events
   wrap.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
   window.addEventListener('mousemove', e => { if(dragging) moveDrag(e.clientX, e.clientY); });
-  window.addEventListener('mouseup', () => endDrag());
+  window.addEventListener('mouseup', (e) => endDrag(e));
 
   // Touch events
   wrap.addEventListener('touchstart', e => {
@@ -1837,7 +1848,7 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
       moveDrag(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: false });
-  window.addEventListener('touchend', () => endDrag());
+  window.addEventListener('touchend', function(e) { var t = e.changedTouches[0]; endDrag({target: document.elementFromPoint(t.clientX, t.clientY)}); });
 
   // Change cursor to indicate draggable
   wrap.style.cursor = 'grab';
@@ -1892,8 +1903,8 @@ function spinToFace(fi){
             <div style="font-size:10px;line-height:1.7;color:rgba(14,14,14,.5);">Comprehensive overview including education, all work experience, volunteer activities, and extracurricular involvement. Best for general applications.</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen-Resume.pdf" download="Keting-Chen-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
-            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio-assets%2Fmain%2FKeting-%28Meredith%29-Chen-Resume.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
+            <a href="https://raw.githubusercontent.com/meredith531/portfolio/main/Keting-_Meredith_-Chen-Resume.pdf" download="Keting-Chen-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
+            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio%2Fmain%2FKeting-_Meredith_-Chen-Resume.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
           </div>
         </div>
       </div>
@@ -1909,8 +1920,8 @@ function spinToFace(fi){
             <div style="font-size:10px;line-height:1.7;color:rgba(14,14,14,.5);">Highlights STM research, Tableau dashboards, Python &amp; R workflows, and data-driven campaign analysis. Tailored for data analyst and research roles.</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen-data-cv.pdf" download="Keting-Chen-Data-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
-            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio-assets%2Fmain%2FKeting-%28Meredith%29-Chen-data-cv.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
+            <a href="https://raw.githubusercontent.com/meredith531/portfolio/main/Keting-_Meredith_-Chen-data-cv.pdf" download="Keting-Chen-Data-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
+            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio%2Fmain%2FKeting-_Meredith_-Chen-data-cv.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
           </div>
         </div>
       </div>
@@ -1926,8 +1937,8 @@ function spinToFace(fi){
             <div style="font-size:10px;line-height:1.7;color:rgba(14,14,14,.5);">Emphasises HCME brand work, LANDCROS transition, Foleon/HubSpot campaign execution, and cross-market performance tracking. Tailored for PR and marketing roles.</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen-campaign-Resume-20260219.pdf" download="Keting-Chen-Campaign-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
-            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio-assets%2Fmain%2FKeting-%28Meredith%29-Chen-campaign-Resume-20260219.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
+            <a href="https://raw.githubusercontent.com/meredith531/portfolio/main/Keting-_Meredith_-Chen-campaign-Resume-20260219.pdf" download="Keting-Chen-Campaign-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
+            <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmeredith531%2Fportfolio%2Fmain%2FKeting-_Meredith_-Chen-campaign-Resume-20260219.pdf&embedded=false" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
           </div>
         </div>
       </div>

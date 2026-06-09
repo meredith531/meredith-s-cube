@@ -1772,88 +1772,111 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
 /* ── DRAG / SWIPE INTERACTION ── */
 (function(){
   const wrap = document.getElementById('cube-wrap');
-  let dragging = false;
+  let pointerDown = false;
+  let isDrag = false;
   let lastX = 0, lastY = 0;
   let velX = 0, velY = 0;
   let prevX = 0, prevY = 0;
+  let startX = 0, startY = 0;
+  let downTarget = null;
+  const DRAG_THRESHOLD = 6;
 
-  var dragStartX2 = 0, dragStartY2 = 0;
-
-  function startDrag(x, y) {
-    dragging = true;
+  function onPointerDown(x, y, target) {
+    pointerDown = true;
+    isDrag = false;
+    startX = x; startY = y;
     lastX = x; lastY = y;
     prevX = x; prevY = y;
-    dragStartX2 = x; dragStartY2 = y;
     velX = 0; velY = 0;
-    autoSpin = false;
+    downTarget = target;
   }
 
-  function moveDrag(x, y) {
-    if (!dragging) return;
-    const dx = x - lastX;
-    const dy = y - lastY;
+  function onPointerMove(x, y) {
+    if (!pointerDown) return;
+    const dx = x - startX;
+    const dy = y - startY;
+    if (!isDrag && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+      isDrag = true;
+      autoSpin = false;
+    }
+    if (!isDrag) return;
+    const mdx = x - lastX;
+    const mdy = y - lastY;
     velX = x - prevX;
     velY = y - prevY;
     prevX = lastX; prevY = lastY;
     lastX = x; lastY = y;
-    rotY += dx * 0.4;
-    rotX -= dy * 0.4;
+    rotY += mdx * 0.4;
+    rotX -= mdy * 0.4;
     rotX = Math.max(-45, Math.min(45, rotX));
     cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
   }
 
-  function endDrag(e) {
-    if (!dragging) return;
-    dragging = false;
-    // If barely moved, treat as click - fire click on target
-    var dx = Math.abs(lastX - dragStartX2);
-    var dy = Math.abs(lastY - dragStartY2);
-    if (dx < 5 && dy < 5 && e && e.target) {
-      var cell = e.target.closest('.photo-cell');
-      if (cell) cell.click();
+  function onPointerUp(x, y, target) {
+    if (!pointerDown) return;
+    pointerDown = false;
+    if (!isDrag) {
+      // It's a tap/click — find the cell and open subpage
+      var el = target || downTarget;
+      var cell = el ? el.closest('.photo-cell') : null;
+      if (cell && cell.dataset && cell._secIdx !== undefined) {
+        openSubpage(SECS[cell._secIdx]);
+      } else if (cell) {
+        // Try to find which section this face belongs to by checking parent face
+        var face = cell.closest('.face');
+        if (face) {
+          var faceId = face.id; // e.g. "f0"
+          var faceNum = parseInt(faceId.replace('f',''));
+          var sec = SECS.find(function(s){ return s.face === faceNum; });
+          if (sec) openSubpage(sec);
+        }
+      }
       return;
     }
-    // Momentum: keep spinning with velocity then fade back to auto
+    // Momentum
     let vx = velX * 0.4;
     const decay = 0.92;
-    function momentum() {
-      if (Math.abs(vx) < 0.1) {
-        // Resume autospin
-        autoSpin = true;
-        return;
-      }
+    (function momentum() {
+      if (Math.abs(vx) < 0.1) { autoSpin = true; return; }
       rotY += vx;
       vx *= decay;
       cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
       requestAnimationFrame(momentum);
-    }
-    requestAnimationFrame(momentum);
+    })();
   }
 
-  // Mouse events
-  wrap.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
-  window.addEventListener('mousemove', e => { if(dragging) moveDrag(e.clientX, e.clientY); });
-  window.addEventListener('mouseup', (e) => endDrag(e));
+  // Mouse
+  wrap.addEventListener('mousedown', function(e) {
+    onPointerDown(e.clientX, e.clientY, e.target);
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (pointerDown) onPointerMove(e.clientX, e.clientY);
+  });
+  window.addEventListener('mouseup', function(e) {
+    onPointerUp(e.clientX, e.clientY, e.target);
+  });
 
-  // Touch events
-  wrap.addEventListener('touchstart', e => {
+  // Touch
+  wrap.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
+      onPointerDown(e.touches[0].clientX, e.touches[0].clientY, e.target);
+    }
+  }, { passive: true });
+  window.addEventListener('touchmove', function(e) {
+    if (pointerDown && isDrag && e.touches.length === 1) {
       e.preventDefault();
-      startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: false });
-  window.addEventListener('touchmove', e => {
-    if (dragging && e.touches.length === 1) {
-      e.preventDefault();
-      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  }, { passive: false });
-  window.addEventListener('touchend', function(e) { var t = e.changedTouches[0]; endDrag({target: document.elementFromPoint(t.clientX, t.clientY)}); });
+  window.addEventListener('touchend', function(e) {
+    var t = e.changedTouches[0];
+    onPointerUp(t.clientX, t.clientY, document.elementFromPoint(t.clientX, t.clientY));
+  });
 
-  // Change cursor to indicate draggable
+  // Cursor
   wrap.style.cursor = 'grab';
-  wrap.addEventListener('mousedown', () => wrap.style.cursor = 'grabbing');
-  wrap.addEventListener('mouseup', () => wrap.style.cursor = 'grab');
+  wrap.addEventListener('mousedown', function() { wrap.style.cursor = 'grabbing'; });
+  window.addEventListener('mouseup', function() { wrap.style.cursor = 'grab'; });
 })();
 
 function spinToFace(fi){

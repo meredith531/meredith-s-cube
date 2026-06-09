@@ -1816,24 +1816,18 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
     if (!pointerDown) return;
     pointerDown = false;
     if (!isDrag) {
-      // It's a tap/click — find the cell and open subpage
       var el = target || downTarget;
       var cell = el ? el.closest('.photo-cell') : null;
-      if (cell && cell.dataset && cell._secIdx !== undefined) {
-        openSubpage(SECS[cell._secIdx]);
-      } else if (cell) {
-        // Try to find which section this face belongs to by checking parent face
+      if (cell) {
         var face = cell.closest('.face');
         if (face) {
-          var faceId = face.id; // e.g. "f0"
-          var faceNum = parseInt(faceId.replace('f',''));
+          var faceNum = parseInt(face.id.replace('f',''));
           var sec = SECS.find(function(s){ return s.face === faceNum; });
           if (sec) openSubpage(sec);
         }
       }
       return;
     }
-    // Momentum
     let vx = velX * 0.4;
     const decay = 0.92;
     (function momentum() {
@@ -1847,6 +1841,7 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
 
   // Mouse
   wrap.addEventListener('mousedown', function(e) {
+    e.preventDefault();
     onPointerDown(e.clientX, e.clientY, e.target);
   });
   window.addEventListener('mousemove', function(e) {
@@ -1856,21 +1851,23 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
     onPointerUp(e.clientX, e.clientY, e.target);
   });
 
-  // Touch
+  // Touch — use pointer events API for unified handling
   wrap.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
+      e.preventDefault(); // must preventDefault here to capture touch
       onPointerDown(e.touches[0].clientX, e.touches[0].clientY, e.target);
     }
-  }, { passive: true });
-  window.addEventListener('touchmove', function(e) {
-    if (pointerDown && isDrag && e.touches.length === 1) {
+  }, { passive: false });
+  wrap.addEventListener('touchmove', function(e) {
+    if (pointerDown && e.touches.length === 1) {
       e.preventDefault();
       onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: false });
-  window.addEventListener('touchend', function(e) {
+  wrap.addEventListener('touchend', function(e) {
     var t = e.changedTouches[0];
-    onPointerUp(t.clientX, t.clientY, document.elementFromPoint(t.clientX, t.clientY));
+    // Use stored downTarget for tap detection (elementFromPoint may miss on touchend)
+    onPointerUp(t.clientX, t.clientY, downTarget);
   });
 
   // Cursor

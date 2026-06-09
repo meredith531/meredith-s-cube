@@ -547,19 +547,15 @@ const PALETTES = [
   idx 5,7,8 → L'oréal 2024 cover
 */
 const FACE3_IMGS = {
-  1: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/1780838651867_image.png',
-  2: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/1780838651867_image.png',
+  1: 'https://raw.githubusercontent.com/meredith531/portfolio/main/urbandecay.png',
   5: 'https://raw.githubusercontent.com/meredith531/portfolio/main/face3_loreal1.jpg',
-  7: 'https://raw.githubusercontent.com/meredith531/portfolio/main/face3_loreal2.jpg',
-  8: 'https://raw.githubusercontent.com/meredith531/portfolio/main/face3_loreal3.jpg',
 };
 
 /* ── IMAGE CONFIG for face 0 (About Me) ── */
 const FACE0_IMGS = {
-  0: 'https://raw.githubusercontent.com/meredith531/portfolio/main/IMG_ddw.jpg',
+  0: 'https://raw.githubusercontent.com/meredith531/portfolio/main/%E6%88%AA%E5%B1%8F2026-06-09%2012.30.24.png',
   2: 'https://raw.githubusercontent.com/meredith531/portfolio/main/about_idfa1.jpg',
   4: 'https://raw.githubusercontent.com/meredith531/portfolio/main/about_idfa2.jpg',
-  7: 'https://raw.githubusercontent.com/meredith531/portfolio/main/IMG_ddw.jpg',
 };
 
 /* ── IMAGE CONFIG for face 1 (Data Science) ── */
@@ -580,11 +576,7 @@ const FACE1_IMGS = {
 const FACE2_IMGS = {
   0: 'https://lh3.googleusercontent.com/d/1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
   1: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Untitled.png',
-  2: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Untitled.png',
-  3: 'https://lh3.googleusercontent.com/d/1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
-  4: 'https://lh3.googleusercontent.com/d/1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
-  5: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Untitled.png',
-  6: 'https://lh3.googleusercontent.com/d/1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
+  5: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/banner1%20(1).jpg',
   7: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/banner2%20(1).png',
   8: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/banner3.png',
 };
@@ -701,11 +693,11 @@ const SECS = [
   We highlight ~4-5 cells, leave others dim
 */
 const HIGHLIGHT_CELLS = [
-  [0,2,4,7],     // About Me
-  [0,1,2,3,4,5,6,7,8],   // Data Science
-  [0,1,2,3,4,5,6,7,8],     // Visuals
-  [1,2,5,7,8],   // Video & Motion
-  [0,2,4,5,7],   // Slides & Decks
+  [0,2,4],             // About Me — DDW, IDFA1, IDFA2
+  [0,1,2,3,4,5,6,7,8], // Data Science — all 9
+  [0,1,5,7,8],         // Visuals — Horse, Newsletter, Banner1-3
+  [1,5],               // Video & Motion — UrbanDecay, Prostyle
+  [0,2,4,5,7],         // Slides & Decks
 ];
 
 /* faces that are NOT the active section get full dim */
@@ -990,15 +982,15 @@ function openSubpage(s){
 
       // Hero: tagline + bio
       amHtml += '<div style="margin-bottom:56px;">';
-      amHtml += '<div style="display:flex;gap:32px;align-items:flex-start;">';
-      amHtml += '<div style="flex:1;">';
+      amHtml += '<div style="display:flex;gap:20px;align-items:flex-start;">';
+      amHtml += '<div style="flex:1;max-width:460px;">';
       amHtml += '<div style="font-size:28px;line-height:1.25;font-weight:500;letter-spacing:-.02em;color:var(--fg);max-width:480px;margin-bottom:28px;">I work at the intersection of data and visual storytelling.</div>';
       amHtml += '<div style="width:32px;height:1px;background:var(--line);margin-bottom:24px;"></div>';
       amHtml += '<div style="font-size:13px;line-height:1.9;color:rgba(14,14,14,.55);max-width:500px;">Bachelor student in Media & Information at the University of Amsterdam (GPA 8.1), with a minor in Data Science. I analyse discourse, build dashboards, design campaigns, and curate — sometimes all at once. Currently based in Amsterdam.</div>';
       amHtml += '</div>';
-      amHtml += '<div style="flex:0 0 auto;">';
-      amHtml += '<div id="profile-photo-circle" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:1px solid rgba(14,14,14,.1);background:rgba(14,14,14,.05);display:flex;align-items:center;justify-content:center;">';
-      amHtml += '<span style="font-size:8px;letter-spacing:.1em;color:rgba(14,14,14,.25);text-transform:uppercase;text-align:center;">photo</span>';
+      amHtml += '<div style="flex:0 0 auto;padding-top:4px;">';
+      amHtml += '<div id="profile-photo-circle" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:1px solid rgba(14,14,14,.1);">';
+      amHtml += '<img src="https://raw.githubusercontent.com/meredith531/portfolio/main/IMG_0611.JPG" style="width:100%;height:100%;object-fit:cover;object-position:center top;">';
       amHtml += '</div></div>';
       amHtml += '</div>';
 
@@ -1111,7 +1103,7 @@ function openSubpage(s){
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Hitachi Construction Machinery (Europe) NV</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:16px;"></div>';
       amHtml += '<div style="display:flex;gap:20px;align-items:flex-start;">';
-      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://www.hitachicm.eu/favicon.ico" style="width:24px;height:24px;object-fit:contain;"></div>';
+      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://raw.githubusercontent.com/meredith531/portfolio/main/hcm_logo.webp" style="width:24px;height:24px;object-fit:contain;"></div>';
       amHtml += '<div style="flex:1;min-width:0;">';
       amHtml += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;"><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">B2B · Construction Machinery</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">PR & Communications</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">EMEA</span></div>';
       amHtml += '<div style="font-size:9px;letter-spacing:.1em;color:rgba(14,14,14,.35);margin-bottom:3px;">Sep 2025 – Feb 2026 · Amsterdam</div>';
@@ -1122,7 +1114,7 @@ function openSubpage(s){
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">POIZON DEWU</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:16px;"></div>';
       amHtml += '<div style="display:flex;gap:20px;align-items:flex-start;">';
-      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://www.dewu.com/favicon.ico" style="width:24px;height:24px;object-fit:contain;"></div>';
+      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://raw.githubusercontent.com/meredith531/portfolio/main/dewu.png" style="width:24px;height:24px;object-fit:contain;"></div>';
       amHtml += '<div style="flex:1;min-width:0;">';
       amHtml += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;"><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">E-commerce</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">Social Media Marketing</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">China</span></div>';
       amHtml += '<div style="font-size:9px;letter-spacing:.1em;color:rgba(14,14,14,.35);margin-bottom:3px;">Apr – Jun 2023 · Shanghai</div>';
@@ -1133,7 +1125,7 @@ function openSubpage(s){
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Shanghai Everyart Museum</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:16px;"></div>';
       amHtml += '<div style="display:flex;gap:20px;align-items:flex-start;">';
-      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://www.everyart.cn/favicon.ico" style="width:24px;height:24px;object-fit:contain;"></div>';
+      amHtml += '<div style="flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(14,14,14,.1);border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;"><img src="https://raw.githubusercontent.com/meredith531/portfolio/main/IMG_everyartlogo.JPG" style="width:24px;height:24px;object-fit:contain;"></div>';
       amHtml += '<div style="flex:1;min-width:0;">';
       amHtml += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;"><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">Arts & Culture</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">Exhibition</span><span style="display:inline-block;padding:2px 8px;border:1px solid rgba(14,14,14,.15);font-size:7px;letter-spacing:.1em;color:rgba(14,14,14,.45);margin-right:5px;">Curation</span></div>';
       amHtml += '<div style="font-size:9px;letter-spacing:.1em;color:rgba(14,14,14,.35);margin-bottom:3px;">Jul – Sep 2022 · Shanghai</div>';
@@ -1154,7 +1146,7 @@ function openSubpage(s){
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:20px;"></div>';
       amHtml += '<div style="display:flex;gap:28px;align-items:flex-start;">';
       amHtml += '<div style="flex:0 0 auto;width:38%;">';
-      amHtml += '<img src="https://raw.githubusercontent.com/meredith531/portfolio/main/IMG_ddw.jpg" style="width:100%;display:block;border-radius:3px;">';
+      amHtml += '<img src="https://raw.githubusercontent.com/meredith531/portfolio/main/%E6%88%AA%E5%B1%8F2026-06-09%2012.30.24.png" style="width:100%;display:block;border-radius:3px;">';
       amHtml += '</div>';
       amHtml += '<div style="flex:1;padding-top:4px;display:flex;flex-direction:column;gap:12px;">';
       amHtml += '<div style="font-size:9px;letter-spacing:.1em;color:rgba(14,14,14,.35);">Oct – Nov 2024 · Eindhoven</div>';

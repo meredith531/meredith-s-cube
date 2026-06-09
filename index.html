@@ -473,11 +473,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); col
     left: 50%;
     margin-top: 60px;
     margin-left: 135px;
-    transform: translate(-50%, -50%) scale(0.65) !important;
+    transform: translate(-50%, -50%) scale(calc(min(32vw, 32vh) / 300px)) !important;
   }
   #cube-wrap[style*="opacity: 1"],
   #cube-wrap[style*="opacity:1"] {
-    transform: translate(-50%, -50%) scale(0.65) !important;
+    transform: translate(-50%, -50%) scale(calc(min(32vw, 32vh) / 300px)) !important;
   }
 
   /* title-block on mobile — adjust position */
@@ -919,8 +919,9 @@ document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.styl
   // STEP 2 (t=700ms): cube scales up from 0 → final
   setTimeout(() => {
     var isMobileP = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
+    var mobileScale = isMobileP ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9;
     cubeWrap.style.opacity = '1';
-    cubeWrap.style.transform = 'translate(-50%,-50%) scale(' + (isMobileP ? 0.65 : 0.9) + ')';
+    cubeWrap.style.transform = 'translate(-50%,-50%) scale(' + mobileScale + ')';
   }, 700);
 
   // STEP 3 (t=1400ms): title-info lines reveal one by one, then Portfolio 2026 tag slides in last
@@ -1047,7 +1048,7 @@ function onHover(s){
   // subtle hover scale (only if not already zoomed)
   if(!cubeZoomed) {
     var isMobilePortrait = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
-    var hoverScale = isMobilePortrait ? 0.65 : 1.02;
+    var hoverScale = isMobilePortrait ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 1.02;
     cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + hoverScale + ')';
   }
 }
@@ -1061,7 +1062,7 @@ function onLeave(){
   // restore normal scale (only if not zoomed)
   if(!cubeZoomed) {
     var isMobilePortrait2 = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
-    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? 0.65 : 0.9) + ')';
+    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9) + ')';
   }
 }
 
@@ -1620,7 +1621,7 @@ document.getElementById('sub-back').addEventListener('click',()=>{
   setTimeout(() => {
     // restore cube to normal idle scale
     var isMobilePortrait2 = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
-    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? 0.65 : 0.9) + ')';
+    cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9) + ')';
   }, 100);
 });
 
@@ -1679,8 +1680,8 @@ function spinToFace(fi){
             <div style="font-size:10px;line-height:1.7;color:rgba(14,14,14,.5);">Comprehensive overview including education, all work experience, volunteer activities, and extracurricular involvement. Best for general applications.</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen.pdf" download="Keting-Chen-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
-            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen.pdf" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
+            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen-Resume.pdf" download="Keting-Chen-CV.pdf" style="display:block;padding:7px 16px;background:var(--fg);color:var(--bg);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Download</a>
+            <a href="https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Keting-(Meredith)-Chen-Resume.pdf" target="_blank" style="display:block;padding:7px 16px;border:1px solid var(--line);color:var(--dim);font-size:7px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;text-align:center;">Preview &#x2197;</a>
           </div>
         </div>
       </div>

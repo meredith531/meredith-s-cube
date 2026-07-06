@@ -732,11 +732,6 @@ const PALETTES = [
 ];
 
 /* ── IMAGE CONFIG for face 3 (Video & Motion) ── */
-/*
-  Highlighted cells: [1,2,5,7,8]
-  idx 1,2   → L'oréal 2023 cover
-  idx 5,7,8 → L'oréal 2024 cover
-*/
 const FACE3_IMGS = {
   1: 'https://raw.githubusercontent.com/meredith531/portfolio/main/urbandecay.png',
   5: 'https://raw.githubusercontent.com/meredith531/portfolio/main/face3_loreal1.jpg',
@@ -763,7 +758,6 @@ const FACE1_IMGS = {
 };
 
 /* ── IMAGE CONFIG for face 2 (Visuals) ── */
-/* Highlighted cells: [0,3,4,6] → all show Leaflet poster */
 const FACE2_IMGS = {
   0: 'https://lh3.googleusercontent.com/d/1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
   1: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Untitled.png',
@@ -771,12 +765,6 @@ const FACE2_IMGS = {
   7: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/banner2%20(1).png',
   8: 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/banner3.png',
 };
-/*
-  Highlighted cells: [0,2,4,5,7]
-  idx 0,2   → L'Oréal 2024 Prostyle cover
-  idx 4,5   → L'Oréal 2023 Maternal Palettes cover
-  idx 7     → Archive Idea cover
-*/
 const FACE4_IMGS = {
   0: 'https://drive.google.com/thumbnail?id=1vTdFjoSSVjzjBG--0wUxaycKZUIYNU9i&sz=w400',
   2: 'https://drive.google.com/thumbnail?id=1vTdFjoSSVjzjBG--0wUxaycKZUIYNU9i&sz=w400',
@@ -848,50 +836,45 @@ for (let f = 0; f < 6; f++) {
 /* ── SECTIONS ── */
 const SECS = [
   {
-    num:'01', cat:'Archive', title:'About Me',
+    num:'01', cat:'Archive', title:'About Me', slug:'about',
     meta:'Profile · Amsterdam · 2026', face:0,
     desc:'Personal profile, background, and areas of expertise.',
     cards:['Introduction','Background','Skills','Contact']
   },
   {
-    num:'02', cat:'Archive', title:'Data Science',
+    num:'02', cat:'Archive', title:'Data Science', slug:'data-science',
     meta:'NLP · Data Visualization', face:1,
     desc:'Research and applied work in machine learning and data visualisation.',
     cards:['NLP Projects','Data Visualization']
   },
   {
-    num:'03', cat:'Archive', title:'Visuals',
+    num:'03', cat:'Archive', title:'Visuals', slug:'visuals',
     meta:'Design · Print · Digital', face:2,
     desc:'Graphic design,digital creative direction.',
     cards:['Leaflet: Horse in Motion','Newsletter — Rewatching Bullet Train','Banners']
   },
   {
-    num:'04', cat:'Archive', title:'Video & Motion',
+    num:'04', cat:'Archive', title:'Video & Motion', slug:'video-motion',
     meta:'Advertisements · 2023', face:3,
     desc:'Advertisements Videos',
     cards:['Loreal Brandstorm 2023', 'Loreal Brandstorm 2024']
   },
   {
-    num:'05', cat:'Archive', title:'Slides & Decks',
+    num:'05', cat:'Archive', title:'Slides & Decks', slug:'slides-decks',
     meta:'Slides · 2024', face:4,
     desc:'Presentation Design.',
     cards:["L'Oréal Brandstorm 2024: Prostyle","L'Oréal Brandstorm 2023: Maternal Palettes","An Archive Idea: From University Assignment"]
   },
 ];
 
-/*
-  Which cells to highlight per section (indices 0-8 on the relevant face)
-  We highlight ~4-5 cells, leave others dim
-*/
 const HIGHLIGHT_CELLS = [
-  [0,2,4],             // About Me — DDW, IDFA1, IDFA2
-  [0,1,2,3,4,5,6,7,8], // Data Science — all 9
-  [0,1,5,7,8],         // Visuals — Horse, Newsletter, Banner1-3
-  [1,5],               // Video & Motion — UrbanDecay, Prostyle
-  [0,2,4,5,7],         // Slides & Decks
+  [0,2,4],
+  [0,1,2,3,4,5,6,7,8],
+  [0,1,5,7,8],
+  [1,5],
+  [0,2,4,5,7],
 ];
 
-/* faces that are NOT the active section get full dim */
 const FACE_Y     = [0, 180, -90, 90, 0, 0];
 const FACE_X     = [0, 0, 0, 0, -90, 90];
 const FACE_NAMES = ['About Me','Data Science','Visuals','Video & Motion','Slides & Decks','—'];
@@ -905,14 +888,12 @@ document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.styl
 
 /* ── INTRO SEQUENCE ── */
 (function(){
-  // Helper: fade element in
   function fadeIn(el, dur, cb){
     el.style.transition = `opacity ${dur}ms cubic-bezier(.16,1,.3,1)`;
     el.style.opacity = '1';
     if(cb) setTimeout(cb, dur);
   }
 
-  // Helper: build char spans for a bt-line
   function buildChars(el, text){
     el.innerHTML = '';
     text.split('').forEach(ch => {
@@ -927,7 +908,6 @@ document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.styl
     return el.querySelectorAll('.char-inner');
   }
 
-  // Helper: reveal chars with stagger
   function revealChars(chars, delay, stagger, cb){
     chars.forEach((c,i) => {
       setTimeout(() => {
@@ -950,26 +930,18 @@ document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.styl
   const rightF     = document.getElementById('right-footer');
   const tSub       = document.querySelector('#title-block .t-sub');
 
-  // Build char spans
   const mChars = buildChars(btMeredith, "Meredith's");
   const cChars = buildChars(btCube, "Cube");
 
-  // STEP 1 (t=0): title block visible + SW fade in simultaneously
   setTimeout(() => {
     titleBlock.style.opacity = '1';
     document.getElementById('title-contact').style.opacity = '1';
-
-    // Reveal "Meredith's" chars
     revealChars(mChars, 0, 42);
-    // Reveal "Cube" chars with slight offset
     revealChars(cChars, 80, 55);
-
-    // SW watermark fades in
     swMark.style.transition = 'opacity 1.1s cubic-bezier(.16,1,.3,1)';
     swMark.style.opacity = '0.13';
   }, 100);
 
-  // STEP 2 (t=700ms): cube scales up from 0 → final
   setTimeout(() => {
     var isMobileP = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
     var mobileScale = isMobileP ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9;
@@ -977,21 +949,23 @@ document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cur.styl
     cubeWrap.style.transform = 'translate(-50%,-50%) scale(' + mobileScale + ')';
   }, 700);
 
-  // STEP 3 (t=1400ms): title-info lines reveal one by one, then Portfolio 2026 tag slides in last
   setTimeout(() => {
     infoLines.forEach((line, i) => {
       setTimeout(() => line.classList.add('revealed'), i * 160);
     });
-    // Portfolio 2026 tag appears after all lines
     setTimeout(() => { tSub.style.opacity = '1'; }, 600);
   }, 1400);
 
-  // STEP 4 (t=1650ms): nav + right panel + face-info fade in
   setTimeout(() => {
     [nav, faceInfo, rightH, listWrap, rightF].forEach((el, i) => {
       setTimeout(() => fadeIn(el, 500), i * 80);
     });
   }, 1650);
+
+  // STEP 5: after intro, check the URL hash and open a subpage directly if it matches a section
+  setTimeout(() => {
+    handleInitialHash();
+  }, 2200);
 
 })();
 
@@ -1015,13 +989,11 @@ function buildFolderSet(container) {
 const listWrapEl = document.getElementById('list-wrap');
 listWrapEl.style.cssText += ';position:relative;overflow:hidden;';
 
-// Scroll track — holds N copies end-to-end
 const scrollTrack = document.createElement('div');
 scrollTrack.id = 'scroll-track';
 scrollTrack.style.cssText = 'position:absolute;top:0;left:0;right:0;will-change:transform;';
 listWrapEl.appendChild(scrollTrack);
 
-// Build initial 3 sets
 const sets = [];
 for (let n = 0; n < 3; n++) {
   const s = document.createElement('div');
@@ -1039,7 +1011,6 @@ function startScroll() {
   oneSetH = sets[0].offsetHeight;
   const wrapH = listWrapEl.offsetHeight;
 
-  // Ensure we have enough sets to always fill the viewport + one extra
   const needed = Math.ceil(wrapH / oneSetH) + 2;
   while (sets.length < needed) {
     const s = document.createElement('div');
@@ -1053,7 +1024,6 @@ function startScroll() {
   (function loop() {
     if (!paused) {
       scrollY += 0.55;
-      // Reset: when we've scrolled exactly one full set, snap back seamlessly
       if (scrollY >= oneSetH) scrollY -= oneSetH;
       scrollTrack.style.transform = `translateY(${-scrollY}px)`;
     }
@@ -1091,7 +1061,6 @@ window.addEventListener('load', () => setTimeout(startScroll, 120));
     prevDragY = lastDragY;
     lastDragY = y;
     scrollY -= dy;
-    // Keep seamless
     if (oneSetH > 0) {
       while (scrollY < 0) scrollY += oneSetH;
       while (scrollY >= oneSetH) scrollY -= oneSetH;
@@ -1102,7 +1071,6 @@ window.addEventListener('load', () => setTimeout(startScroll, 120));
   function onDragEnd() {
     if (!isDragging) return;
     isDragging = false;
-    // Momentum
     let vel = -dragVel * 0.6;
     const decay = 0.90;
     function momentum() {
@@ -1122,18 +1090,15 @@ window.addEventListener('load', () => setTimeout(startScroll, 120));
     requestAnimationFrame(momentum);
   }
 
-  // Mouse
   wrap.addEventListener('mousedown', e => onDragStart(e.clientY, e.clientX));
   window.addEventListener('mousemove', e => { if (isDragging) onDragMove(e.clientY); });
   window.addEventListener('mouseup', () => onDragEnd());
 
-  // Touch
   wrap.addEventListener('touchstart', e => {
     if (e.touches.length === 1) onDragStart(e.touches[0].clientY, e.touches[0].clientX);
   }, { passive: true });
   wrap.addEventListener('touchmove', e => {
     if (!isDragging || e.touches.length !== 1) return;
-    // Only handle if primarily vertical
     const dy = Math.abs(e.touches[0].clientY - dragStartY);
     const dx = Math.abs(e.touches[0].clientX - dragStartX);
     if (dy > dx) {
@@ -1146,18 +1111,15 @@ window.addEventListener('load', () => setTimeout(startScroll, 120));
 
 /* ── CELL HIGHLIGHT LOGIC ── */
 function highlightSection(secIdx) {
-  /* clear all cells first */
   for (let f=0;f<6;f++){
     faceCells[f].forEach(c=>{ c.classList.remove('cell-hi','cell-dim'); });
   }
   const activeFace = SECS[secIdx].face;
   const hiSet = new Set(HIGHLIGHT_CELLS[secIdx]);
-  /* active face: highlight chosen cells, dim others */
   faceCells[activeFace].forEach((c,i)=>{
     if(hiSet.has(i)) c.classList.add('cell-hi');
     else c.classList.add('cell-dim');
   });
-  /* all other faces: full dim */
   for (let f=0;f<6;f++){
     if(f===activeFace) continue;
     faceCells[f].forEach(c=>c.classList.add('cell-dim'));
@@ -1174,12 +1136,10 @@ function onHover(s){
   highlightSection(SECS.indexOf(s));
   document.getElementById('face-label').textContent=FACE_NAMES[s.face];
   document.getElementById('face-counter').textContent=`0${s.face+1} / 06`;
-  // dim all folders that are NOT the same section index
   document.querySelectorAll('.folder').forEach(f => {
     if(parseInt(f.dataset.i) !== SECS.indexOf(s)) f.classList.add('folder-dim');
     else f.classList.remove('folder-dim');
   });
-  // subtle hover scale (only if not already zoomed)
   if(!cubeZoomed) {
     var isMobilePortrait = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
     var hoverScale = isMobilePortrait ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 1.02;
@@ -1193,7 +1153,6 @@ function onLeave(){
   document.getElementById('face-label').textContent='—';
   document.getElementById('face-counter').textContent='—';
   document.querySelectorAll('.folder').forEach(f => f.classList.remove('folder-dim'));
-  // restore normal scale (only if not zoomed)
   if(!cubeZoomed) {
     var isMobilePortrait2 = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
     cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9) + ')';
@@ -1224,10 +1183,15 @@ function zoomCubeShrink() {
 function zoomCubeRestore() {
   cubeWrapEl.classList.remove('cube-shrink');
 }
+</script>
 
+
+<script>
 /* ── SUBPAGE ── */
 const subpage = document.getElementById('subpage');
-function openSubpage(s){
+/* set updateHash=false when opening in response to a URL/hash change (avoid re-pushing same state) */
+function openSubpage(s, updateHash){
+  if (updateHash === undefined) updateHash = true;
   const idx = SECS.indexOf(s);
   currentSecIdx = idx;
   updateMenuHighlight(idx);
@@ -1236,31 +1200,28 @@ function openSubpage(s){
   document.getElementById('sub-hero-meta').textContent  = s.meta;
   document.getElementById('sub-title-sm').textContent   = s.title;
 
-  /* highlight the face first, then zoom in, then after a beat open subpage */
+  if (updateHash) {
+    history.pushState({ sec: s.slug }, '', '#' + s.slug);
+  }
+
   highlightSection(idx);
   spinToFace(s.face);
   zoomCubeIn();
 
-  /* wait for zoom animation to play, then transition to subpage */
   setTimeout(() => {
-    /* build content cards */
     const cont = document.getElementById('sub-content');
     cont.innerHTML='';
 
     if (idx === 0) {
-      /* ── ABOUT ME ── */
       cont.classList.remove('video-mode');
       cont.style.cssText = 'display:block; padding:0;';
 
       var amHtml = '';
-
-      // Top divider + tab
       amHtml += '<div style="margin-bottom:40px;">';
       amHtml += '<div style="display:inline-block;padding:4px 12px;background:#c0392b;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Keting (Meredith) Chen</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);"></div>';
       amHtml += '</div>';
 
-      // Hero: tagline + bio
       amHtml += '<div style="margin-bottom:56px;">';
       amHtml += '<div style="display:flex;gap:20px;align-items:flex-start;">';
       amHtml += '<div style="flex:1;max-width:460px;">';
@@ -1274,10 +1235,8 @@ function openSubpage(s){
       amHtml += '</div></div>';
       amHtml += '</div>';
 
-      // Three columns: Education · Experience · Tools
       amHtml += '<div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:56px;">';
 
-      // Education
       amHtml += '<div style="flex:1;min-width:160px;">';
       amHtml += '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:18px;">Education</div>';
       var edu = [
@@ -1295,7 +1254,6 @@ function openSubpage(s){
       });
       amHtml += '</div>';
 
-      // Experience
       amHtml += '<div style="flex:1.2;min-width:180px;">';
       amHtml += '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:18px;">Experience</div>';
       var exp = [
@@ -1313,7 +1271,6 @@ function openSubpage(s){
       });
       amHtml += '</div>';
 
-      // Skills + Languages
       amHtml += '<div style="flex:1;min-width:140px;">';
       amHtml += '<div style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:18px;">Tools</div>';
       var tools = ['Figma','Canva','Flourish','Foleon','HubSpot','Tableau','Python','R Markdown','MySQL','Adobe Packages'];
@@ -1336,14 +1293,12 @@ function openSubpage(s){
       });
       amHtml += '</div>';
 
-      amHtml += '</div>'; // end three columns
+      amHtml += '</div>';
 
-      // ── EDUCATION ──
       amHtml += '<div style="margin-bottom:48px;">';
       amHtml += '<div style="display:inline-block;width:100%;padding:5px 14px;background:#c0392b;font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:#fff;margin-bottom:0;box-sizing:border-box;">Education</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:28px;"></div>';
 
-      // UvA
       amHtml += '<div style="margin-bottom:32px;">';
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">University of Amsterdam</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:16px;"></div>';
@@ -1360,7 +1315,6 @@ function openSubpage(s){
       amHtml += '</div>';
       amHtml += '</div></div>';
 
-      // UNNC
       amHtml += '<div style="margin-bottom:8px;">';
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">University of Nottingham Ningbo China</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:16px;"></div>';
@@ -1375,7 +1329,6 @@ function openSubpage(s){
 
       amHtml += '</div>';
 
-      // ── EXPERIENCE ──
       amHtml += '<div style="margin-bottom:48px;">';
       amHtml += '<div style="display:inline-block;width:100%;padding:5px 14px;background:#c0392b;font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:#fff;margin-bottom:0;box-sizing:border-box;">Experience</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:28px;"></div>';
@@ -1414,13 +1367,10 @@ function openSubpage(s){
       amHtml += '</div></div></div>';
       amHtml += '</div>';
 
-
-      // ── EXTRACURRICULAR ──
       amHtml += '<div style="margin-bottom:48px;">';
       amHtml += '<div style="display:inline-block;width:100%;padding:5px 14px;background:#c0392b;font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:#fff;margin-bottom:0;box-sizing:border-box;">Extracurricular Experience</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:28px;"></div>';
 
-      // DDW section
       amHtml += '<div style="margin-bottom:36px;">';
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Dutch Design Week 2024</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:20px;"></div>';
@@ -1435,7 +1385,6 @@ function openSubpage(s){
       amHtml += '</div>';
       amHtml += '</div>';
 
-      // IDFA section
       amHtml += '<div style="margin-bottom:40px;">';
       amHtml += '<div style="display:inline-block;padding:3px 10px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">IDFA 2023</div>';
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:20px;"></div>';
@@ -1446,13 +1395,12 @@ function openSubpage(s){
       amHtml += '</div>';
       amHtml += '<div style="flex:1;padding-top:4px;display:flex;flex-direction:column;gap:12px;">';
       amHtml += '<div style="font-size:9px;letter-spacing:.1em;color:rgba(14,14,14,.35);">Nov 2023 · Amsterdam</div>';
-      amHtml += '<div style="font-size:13px;line-height:1.5;color:rgba(14,14,14,.75);">Volunteered at the International Documentary Festival Amsterdam (IDFA), one of the world’s leading documentary film festivals. Supported venue preparation, took meeting notes, and assisted with audience management during screenings.</div>';
+      amHtml += '<div style="font-size:13px;line-height:1.5;color:rgba(14,14,14,.75);">Volunteered at the International Documentary Festival Amsterdam (IDFA), one of the world\'s leading documentary film festivals. Supported venue preparation, took meeting notes, and assisted with audience management during screenings.</div>';
       amHtml += '</div>';
       amHtml += '</div>';
       amHtml += '</div>';
-      amHtml += '</div>'; // close extracurricular
+      amHtml += '</div>';
 
-      // Contact row — LinkedIn icon only
       amHtml += '<div style="width:100%;height:1px;background:var(--line);margin-bottom:14px;"></div>';
       amHtml += '<div style="display:flex;gap:12px;align-items:center;">';
       amHtml += '<a href="https://www.linkedin.com/in/meredith-chen-a06341328" target="_blank" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid rgba(14,14,14,.15);border-radius:2px;color:rgba(14,14,14,.5);text-decoration:none;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor=\'rgba(14,14,14,.5)\';this.style.color=\'rgba(14,14,14,.9)\'" onmouseout="this.style.borderColor=\'rgba(14,14,14,.15)\';this.style.color=\'rgba(14,14,14,.5)\'">';
@@ -1468,7 +1416,6 @@ function openSubpage(s){
       cont.classList.remove('video-mode');
     }
 
-    /* Video & Motion: embed Vimeo players instead of placeholder cards */
     if (idx === 3) {
       const videos = [
         { label:"L'Oréal Brandstorm 2023", embed:`<div style="padding:42.6% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1190122344?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe></div>` },
@@ -1485,7 +1432,6 @@ function openSubpage(s){
         cont.appendChild(card);
       });
     } else if (idx === 4) {
-      /* Slides & Decks: embed PDFs from GitHub */
       const pdfs = [
         { label:"L'Oréal Brandstorm 2024: Prostyle", url:'https://drive.google.com/file/d/1MVKpYQaRLIozSyGttPnQHi9K2NMOlvk7/preview' },
         { label:"L'Oréal Brandstorm 2023: Maternal Palettes", url:'https://drive.google.com/file/d/1539-oWlu5n63hNC5B3suq66-ZB8b2dPS/preview' },
@@ -1508,7 +1454,6 @@ function openSubpage(s){
         cont.appendChild(card);
       });
     } else if (idx === 1) {
-      /* Data Science: Reddit STM thesis project */
       cont.classList.remove('video-mode');
       cont.style.cssText = 'display:block; padding:0;';
 
@@ -1525,7 +1470,6 @@ function openSubpage(s){
       dsHtml += '<div style="width:100%;height:1px;background:var(--line);"></div>';
       dsHtml += '</div>';
 
-      // Hero: network + text
       dsHtml += '<div style="display:flex;gap:40px;align-items:flex-start;margin-bottom:56px;flex-wrap:wrap;">';
       dsHtml += '<div style="flex:1.4;min-width:260px;"><img src="' + dsN + '" style="width:100%;border-radius:4px;display:block;"></div>';
       dsHtml += '<div style="flex:1;min-width:200px;padding-top:8px;display:flex;flex-direction:column;justify-content:flex-start;gap:16px;">';
@@ -1537,7 +1481,6 @@ function openSubpage(s){
       dsHtml += '<div style="font-size:9px;letter-spacing:.08em;color:rgba(14,14,14,.4);">R · STM · HCA · ggraph · Reddit API</div>';
       dsHtml += '</div></div>';
 
-      // Proportions + Temporal
       dsHtml += '<div style="display:flex;gap:20px;margin-bottom:40px;align-items:flex-start;">';
       dsHtml += '<div style="flex:1;min-width:0;">';
       dsHtml += '<div style="font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Expected Topic Proportions</div>';
@@ -1550,14 +1493,12 @@ function openSubpage(s){
       dsHtml += '<div style="font-size:9px;line-height:1.7;color:rgba(14,14,14,.5);margin-top:10px;">Discursive emphasis shifted from operational critique in 2024 toward philosophical and epistemic challenges to LLM cognition in 2025.</div>';
       dsHtml += '</div></div>';
 
-      // Heatmap
       dsHtml += '<div style="margin-bottom:40px;">';
       dsHtml += '<div style="font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Inter-Topic Correlation Heatmap · HCA Clusters</div>';
       dsHtml += '<img src="' + dsH + '" style="width:100%;border-radius:4px;display:block;">';
       dsHtml += '<div style="font-size:9px;line-height:1.7;color:rgba(14,14,14,.5);margin-top:10px;">Hierarchical cluster analysis reveals three thematic clusters: AI commercialisation critique (Cluster 1), mechanistic explanation discourse (Cluster 2), and epistemic accountability debate (Cluster 3).</div>';
       dsHtml += '</div>';
 
-      // Diagnostics
       dsHtml += '<div style="margin-bottom:40px;">';
       dsHtml += '<div style="font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Model Diagnostics · SearchK (K = 8 – 20)</div>';
       dsHtml += '<img src="' + dsD + '" style="width:100%;border-radius:4px;display:block;">';
@@ -1572,23 +1513,15 @@ function openSubpage(s){
 
       cont.innerHTML = dsHtml;
 
-      // Project 2: placeholder
       var ds2Html = '';
-
       ds2Html += '<div style="margin-bottom:64px;">';
-
-      // Red tab + divider
       ds2Html += '<div style="margin-bottom:24px;">';
       ds2Html += '<div style="display:inline-block;padding:4px 12px;background:#c0392b;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Business Analytics · UvA · 2025</div>';
       ds2Html += '<div style="width:100%;height:1px;background:var(--line);"></div>';
       ds2Html += '</div>';
 
-      // Hero: title + description
       ds2Html += '<div style="display:flex;gap:40px;align-items:flex-start;margin-bottom:48px;flex-wrap:wrap;">';
 
-      // Left: 2x2 placeholder grid
-
-      // Right: text
       ds2Html += '<div style="flex:1;min-width:200px;padding-top:8px;display:flex;flex-direction:column;gap:16px;">';
       ds2Html += '<div style="font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);">02 — Business Analytics · Group Project · 2025</div>';
       ds2Html += '<div style="font-size:15px;line-height:1.35;font-weight:500;color:var(--fg);letter-spacing:-.01em;">Superstore: Operational & Management Analysis</div>';
@@ -1598,7 +1531,6 @@ function openSubpage(s){
       ds2Html += '<div style="font-size:9px;letter-spacing:.08em;color:rgba(14,14,14,.4);">Tableau · MySQL · BSC · Data Warehouse</div>';
       ds2Html += '</div></div>';
 
-      // Four KPI rows with placeholders
       var kpiRows = [
         { perspective: 'Financial', kpis: [
           { label: 'Net Profit Margin by Sub-Category', img: 'https://raw.githubusercontent.com/meredith531/portfolio/main/ds_npm.jpg' },
@@ -1638,7 +1570,6 @@ function openSubpage(s){
       cont.innerHTML += ds2Html;
 
     } else if (idx === 2) {
-      /* Visuals: alternating left-right gallery layout */
       cont.classList.remove('video-mode');
       cont.style.cssText = 'display:block; padding:0;';
 
@@ -1650,7 +1581,7 @@ function openSubpage(s){
           driveId:'1tC09hQyvh209JhrodYMmhGkLwxhJLh1B',
           year:'2024',
           medium:'Print · A4',
-          desc:"A promotional leaflet exploring the origin of cinema through Eadweard Muybridge\u2019s Horse in Motion \u2014 the first film ever made."
+          desc:"A promotional leaflet exploring the origin of cinema through Eadweard Muybridge's Horse in Motion — the first film ever made."
         },
         { label:'Newsletter — Rewatching Bullet Train', type:'artwork', imgUrl:'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/Untitled.png', driveId:'', year:'2025', medium:'Newsletter · Digital', desc:'A newsletter issue exploring Bullet Train (2023) as a metaphor for modern life at full speed — no way to stop, no exits, only momentum.' },
         { label:'Banners', type:'banners',
@@ -1668,7 +1599,6 @@ function openSubpage(s){
         const flexDir = isEven ? 'row' : 'row-reverse';
 
         if (item.type === 'banners') {
-          /* ── BANNERS: three side-by-side images ── */
           wrap.style.cssText = 'margin-bottom:72px;';
           var bannersHtml = '<div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:24px;">Banners</div>';
           bannersHtml += '<div style="display:flex;gap:20px;align-items:stretch;">';
@@ -1732,7 +1662,6 @@ function openSubpage(s){
         cont.appendChild(card);
       });
 
-      /* placeholder "add content" card */
       const add=document.createElement('div');
       add.className='sub-card';
       add.style.cssText='background:transparent;border:1px dashed rgba(14,14,14,.15);';
@@ -1750,15 +1679,48 @@ function openSubpage(s){
 }
 
 document.getElementById('sub-back').addEventListener('click',()=>{
+  closeSubpage(true);
+});
+
+function closeSubpage(updateHash){
   subpage.classList.remove('open');
   paused=false; autoSpin=true;
   clearHighlight();
   zoomCubeRestore();
+  currentSecIdx = -1;
+  if (updateHash) {
+    history.pushState({}, '', window.location.pathname + window.location.search);
+  }
   setTimeout(() => {
-    // restore cube to normal idle scale
     var isMobilePortrait2 = window.innerWidth <= 768 && window.innerHeight > window.innerWidth;
     cubeWrapEl.style.transform = 'translate(-50%,-50%) scale(' + (isMobilePortrait2 ? Math.min(window.innerWidth * 0.32, window.innerHeight * 0.32) / 300 : 0.9) + ')';
   }, 100);
+}
+
+/* ── HASH ROUTING ── */
+function findSectionBySlug(slug){
+  if (!slug) return null;
+  return SECS.find(function(s){ return s.slug === slug; }) || null;
+}
+
+function handleInitialHash(){
+  var slug = window.location.hash.replace('#','');
+  var sec = findSectionBySlug(slug);
+  if (sec) {
+    openSubpage(sec, false);
+  }
+}
+
+window.addEventListener('popstate', function(e){
+  var slug = window.location.hash.replace('#','');
+  var sec = findSectionBySlug(slug);
+  if (sec) {
+    openSubpage(sec, false);
+  } else {
+    if (subpage.classList.contains('open')) {
+      closeSubpage(false);
+    }
+  }
 });
 
 /* ── CUBE ── */
@@ -1839,7 +1801,6 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
     })();
   }
 
-  // Mouse
   wrap.addEventListener('mousedown', function(e) {
     e.preventDefault();
     onPointerDown(e.clientX, e.clientY, e.target);
@@ -1851,10 +1812,9 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
     onPointerUp(e.clientX, e.clientY, e.target);
   });
 
-  // Touch — use pointer events API for unified handling
   wrap.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
-      e.preventDefault(); // must preventDefault here to capture touch
+      e.preventDefault();
       onPointerDown(e.touches[0].clientX, e.touches[0].clientY, e.target);
     }
   }, { passive: false });
@@ -1866,11 +1826,9 @@ let rotY=0,rotX=0,autoSpin=true,rafId=null;
   }, { passive: false });
   wrap.addEventListener('touchend', function(e) {
     var t = e.changedTouches[0];
-    // Use stored downTarget for tap detection (elementFromPoint may miss on touchend)
     onPointerUp(t.clientX, t.clientY, downTarget);
   });
 
-  // Cursor
   wrap.style.cursor = 'grab';
   wrap.addEventListener('mousedown', function() { wrap.style.cursor = 'grabbing'; });
   window.addEventListener('mouseup', function() { wrap.style.cursor = 'grab'; });
@@ -1898,7 +1856,6 @@ function spinToFace(fi){
 <div id="cv-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(14,14,14,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);">
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);width:min(680px,92vw);max-height:88vh;overflow-y:auto;padding:40px 44px 36px;cursor:auto;">
 
-    <!-- header -->
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;">
       <div>
         <div style="font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;">Curriculum Vitae</div>
@@ -1909,10 +1866,8 @@ function spinToFace(fi){
 
     <div style="width:100%;height:1px;background:var(--line);margin-bottom:28px;"></div>
 
-    <!-- CV cards -->
     <div style="display:flex;flex-direction:column;gap:1px;">
 
-      <!-- General -->
       <div style="padding:22px 0;border-bottom:1px solid var(--line);">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
           <div style="flex:1;">
@@ -1929,7 +1884,6 @@ function spinToFace(fi){
         </div>
       </div>
 
-      <!-- Data -->
       <div style="padding:22px 0;border-bottom:1px solid var(--line);">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
           <div style="flex:1;">
@@ -1946,7 +1900,6 @@ function spinToFace(fi){
         </div>
       </div>
 
-      <!-- Campaign -->
       <div style="padding:22px 0;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
           <div style="flex:1;">
@@ -1975,7 +1928,6 @@ function openCVOverlay() {
   var overlay = document.getElementById('cv-overlay');
   overlay.style.display = 'block';
   document.body.style.overflow = 'hidden';
-  // Restore normal cursor inside overlay
   document.body.style.cursor = 'auto';
   var cur = document.getElementById('cur');
   var curRing = document.getElementById('cur-ring');
@@ -1986,7 +1938,6 @@ function closeCVOverlay() {
   var overlay = document.getElementById('cv-overlay');
   overlay.style.display = 'none';
   document.body.style.overflow = '';
-  // Restore custom cursor
   document.body.style.cursor = 'none';
   var cur = document.getElementById('cur');
   var curRing = document.getElementById('cur-ring');
@@ -2010,7 +1961,6 @@ function updateMenuHighlight(idx) {
   });
 }
 
-// Menu button click toggles dropdown
 var menuDropdown = document.getElementById('sub-menu-dropdown');
 var menuBtn = document.getElementById('sub-menu-btn');
 var menuOpen = false;
@@ -2026,26 +1976,23 @@ menuBtn.addEventListener('click', function(e) {
   menuDropdown.style.display = menuOpen ? 'block' : 'none';
 });
 
-// CV menu item
 document.getElementById('sub-menu-cv').addEventListener('click', function(e) {
   e.stopPropagation();
   closeMenuDropdown();
   openCVOverlay();
 });
 
-// Close on outside click
 document.addEventListener('click', function(e) {
   if (!document.getElementById('sub-menu-wrap').contains(e.target)) {
     closeMenuDropdown();
   }
 });
 
-// Menu item clicks
 document.querySelectorAll('.sub-menu-item').forEach(function(item) {
   item.addEventListener('click', function(e) {
     e.stopPropagation();
     var secAttr = item.getAttribute('data-sec');
-    if (secAttr === null) return; // skip items without data-sec (e.g. CV)
+    if (secAttr === null) return;
     var i = parseInt(secAttr);
     closeMenuDropdown();
     if (i === currentSecIdx) return;

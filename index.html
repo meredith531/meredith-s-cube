@@ -1463,12 +1463,12 @@ function openSubpage(s, updateHash){
       var dsH = 'https://raw.githubusercontent.com/meredith531/portfolio/main/ds_heatmap.jpg';
       var dsD = 'https://raw.githubusercontent.com/meredith531/portfolio-assets/main/searchK_diagnostics.png';
 
-      var dsHtml = '';
+     var dsHtml = '';
       dsHtml += '<div style="margin-bottom:64px;">';
       dsHtml += '<div style="margin-bottom:24px;">';
       dsHtml += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">';
       dsHtml += '<div style="display:inline-block;padding:4px 12px;background:#c0392b;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">2026 · Thesis · NLP</div>';
-      dsHtml += '<div style="display:inline-block;padding:4px 12px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:0;">Accepted — EMERGE 2026: Contested Futures</div>';
+      dsHtml += '<a href="https://emerge.ifdt.bg.ac.rs/" target="_blank" style="display:inline-block;padding:4px 12px;background:#1a3a5c;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#fff;text-decoration:none;">Accepted By: EMERGE 2026 Contested Futures</a>';
       dsHtml += '</div>';
       dsHtml += '<div style="width:100%;height:1px;background:var(--line);margin-top:8px;"></div>';
       dsHtml += '</div>';
@@ -1476,13 +1476,19 @@ function openSubpage(s, updateHash){
       dsHtml += '<div style="display:flex;gap:40px;align-items:flex-start;margin-bottom:56px;flex-wrap:wrap;">';
       dsHtml += '<div style="flex:1.4;min-width:260px;"><img src="' + dsN + '" style="width:100%;border-radius:4px;display:block;"></div>';
       dsHtml += '<div style="flex:1;min-width:200px;padding-top:8px;display:flex;flex-direction:column;justify-content:flex-start;gap:16px;">';
-      dsHtml += '<div style="font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);">01 — NLP · Thesis · 2026</div>';
+      dsHtml += '<div style="font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);">01 · NLP · Thesis · 2026</div>';
       dsHtml += '<div style="font-size:15px;line-height:1.35;font-weight:500;color:var(--fg);letter-spacing:-.01em;">Tactics Against the Mirror: How Reddit Users Resist "Banal Deception" in LLMs</div>';
-      dsHtml += '<div style="font-size:9px;letter-spacing:.06em;color:rgba(14,14,14,.45);">Accepted for presentation at <span style="color:var(--fg);font-weight:500;">EMERGE 2026: Contested Futures</span></div>';
+      dsHtml += '<a href="https://emerge.ifdt.bg.ac.rs/" target="_blank" style="font-size:12px;font-weight:700;letter-spacing:.02em;color:#c0392b;text-decoration:none;">Accepted for presentation at EMERGE 2026: Contested Futures ↗</a>';
       dsHtml += '<div style="display:inline-block;padding:4px 10px;background:rgba(14,14,14,0.08);font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:rgba(14,14,14,.5);margin-bottom:4px;">2026 · Thesis · NLP · STM</div>';
       dsHtml += '<div style="width:100%;height:1px;background:var(--line);"></div>';
-      dsHtml += '<div style="font-size:10px;line-height:1.8;color:rgba(14,14,14,.55);">A mixed-method study combining Structural Topic Modelling with critical discourse analysis of 1,836 Reddit comments, tracing how users identify, name, and push back against the confident-but-unreliable outputs of large language models — and how that resistance deepened from 2024 to 2025.</div>';
-      dsHtml += '<div style="font-size:9px;letter-spacing:.08em;color:rgba(14,14,14,.4);">R · STM · HCA · ggraph · Reddit API</div>';
+      dsHtml += '<div style="font-size:10px;line-height:1.8;color:rgba(14,14,14,.55);">A mixed method study combining Structural Topic Modelling with critical discourse analysis of 1,836 Reddit comments, tracing how users identify, name, and push back against the confident but unreliable outputs of large language models.</div>';
+      dsHtml += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">';
+      dsHtml += '<div style="font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);">Result Highlights</div>';
+      dsHtml += '<div style="font-size:10px;line-height:1.75;color:rgba(14,14,14,.6);">Users build a layered set of tactics: first questioning what LLMs actually know, then tracing failures back to commercial design choices, then repositioning themselves as critically aware readers.</div>';
+      dsHtml += '<div style="font-size:10px;line-height:1.75;color:rgba(14,14,14,.6);">Between 2024 and 2025, resistance shifted from historical analogy (the ELIZA effect, Huxley\'s hypnopaedia) toward using the live discussion thread itself as evidence.</div>';
+      dsHtml += '<div style="font-size:10px;line-height:1.75;color:rgba(14,14,14,.6);">STM (K = 12) mapped topic prevalence and temporal shifts across 1,836 comments from two ELI5 threads posted a year apart.</div>';
+      dsHtml += '</div>';
+      dsHtml += '<div style="font-size:9px;letter-spacing:.08em;color:rgba(14,14,14,.4);margin-top:4px;">R · STM · HCA · ggraph · Reddit API</div>';
       dsHtml += '</div></div>';
 
       dsHtml += '<div style="display:flex;gap:20px;margin-bottom:40px;align-items:flex-start;">';
